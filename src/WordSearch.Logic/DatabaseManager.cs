@@ -103,10 +103,18 @@ namespace WordSearch.Logic
 
         private static void CheckDbName(string dbName)
         {
-            var isCorrect = DatabaseConstants.CorrectDatabaseNameRegex.IsMatch(dbName);
-            if (!isCorrect)
+            if (string.IsNullOrEmpty(dbName))
             {
-                throw new DatabaseWrongNameException(dbName, "Contains invalid characters");
+                throw new DatabaseWrongNameException(dbName, "Cant be null or empty");
+            }
+            else
+            {
+                var match = DatabaseConstants.CorrectDatabaseNameRegex.Match(dbName);
+                var notFullMatch = match?.Length != dbName.Length;
+                if (notFullMatch)
+                {
+                    throw new DatabaseWrongNameException(dbName, "Contains invalid characters");
+                }
             }
         }
 

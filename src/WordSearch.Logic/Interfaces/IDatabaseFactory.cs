@@ -2,7 +2,7 @@
 
 namespace WordSearch.Logic.Interfaces
 {
-    internal interface IDatabaseFactory
+    public interface IDatabaseFactory
     {
         Task<IDatabase> MakeDatabaseAsync(string dbName, IFileIO charsFile, IFileIO wordsFile);
     }
