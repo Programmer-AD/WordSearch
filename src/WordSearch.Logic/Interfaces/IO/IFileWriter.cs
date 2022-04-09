@@ -4,5 +4,7 @@
     {
         Task WriteAsync(string value);
         Task WriteAsync(Span<byte> bytes);
+
+        Task FlushAsync();
     }
 }
