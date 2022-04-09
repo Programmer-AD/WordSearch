@@ -5,5 +5,6 @@
         void Create(string filePath);
         void Delete(string filePath);
         bool Exists(string filePath);
+        IEnumerable<string> GetDirectoryFiles(string directoryPath);
     }
 }

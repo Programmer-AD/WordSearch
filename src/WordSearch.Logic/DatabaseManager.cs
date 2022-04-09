@@ -76,7 +76,7 @@ namespace WordSearch.Logic
 
         public async Task<IEnumerable<string>> GetDbNamesAsync()
         {
-            var dbNames = Directory.EnumerateFiles(config.DatabaseDirectory)
+            var dbNames = fileManager.GetDirectoryFiles(config.DatabaseDirectory)
                 .Where(x => x.EndsWith(DatabaseConstants.DatabaseWordFileFormat))
                 .Select(x => x[..^DatabaseConstants.DatabaseWordFileFormat.Length]);
             return await Task.FromResult(dbNames);
