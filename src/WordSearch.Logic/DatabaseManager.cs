@@ -25,6 +25,11 @@ namespace WordSearch.Logic
 
         public async Task CreateAsync(string dbName, string chars)
         {
+            if (string.IsNullOrEmpty(chars))
+            {
+                throw new ArgumentException("Chars must not be null or empty", nameof(chars));
+            }
+
             await CheckDbExistence(dbName, shouldExist: false);
 
             var wordsFilePath = GetWordsFilePath(dbName);

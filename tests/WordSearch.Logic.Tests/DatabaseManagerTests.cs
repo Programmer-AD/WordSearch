@@ -48,6 +48,24 @@ namespace WordSearch.Logic.Tests
         }
 
         [Test]
+        public async Task CreateAsync_WhenCharsIsNull_ThrowArgumentException()
+        {
+            SetDbExists(false);
+
+            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, null))
+                .Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Test]
+        public async Task CreateAsync_WhenCharsIsEmpty_ThrowArgumentException()
+        {
+            SetDbExists(false);
+
+            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, null))
+                .Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Test]
         public async Task CreateAsync_WhenDatabaseExists_ThrowDatabaseAlreadyExistsException()
         {
             SetDbExists(true);
