@@ -1,6 +1,6 @@
 ﻿using WordSearch.Logic.Interfaces;
 
-namespace WordSearch.Logic.Database
+namespace WordSearch.Logic
 {
     internal class DatabaseManager : IDatabaseManager
     {
