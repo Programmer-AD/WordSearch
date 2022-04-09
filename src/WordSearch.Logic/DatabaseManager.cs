@@ -67,7 +67,7 @@ namespace WordSearch.Logic
             return database;
         }
 
-        public async Task<bool> Exists(string dbName)
+        public async Task<bool> ExistsAsync(string dbName)
         {
             var wordsFilePath = GetWordsFilePath(dbName);
             var result = fileManager.Exists(wordsFilePath);
@@ -76,21 +76,23 @@ namespace WordSearch.Logic
 
         public async Task<IEnumerable<string>> GetDbNamesAsync()
         {
+            var fileFormat = DatabaseConstants.DatabaseWordFileExtension;
             var dbNames = fileManager.GetDirectoryFiles(config.DatabaseDirectory)
-                .Where(x => x.EndsWith(DatabaseConstants.DatabaseWordFileFormat))
-                .Select(x => x[..^DatabaseConstants.DatabaseWordFileFormat.Length]);
+                .Where(x => x.EndsWith(fileFormat))
+                .Select(x => x[..^fileFormat.Length]);
+
             return await Task.FromResult(dbNames);
         }
 
-        private string GetCharsFilePath(string dbName)
+        internal string GetCharsFilePath(string dbName)
         {
-            var fileName = $"{dbName}.{DatabaseConstants.DatabaseCharsFileFormat}";
+            var fileName = $"{dbName}{DatabaseConstants.DatabaseCharsFileExtension}";
             return GetDatabasePath(fileName);
         }
 
-        private string GetWordsFilePath(string dbName)
+        internal string GetWordsFilePath(string dbName)
         {
-            var fileName = $"{dbName}.{DatabaseConstants.DatabaseWordFileFormat}";
+            var fileName = $"{dbName}{DatabaseConstants.DatabaseWordFileExtension}";
             return GetDatabasePath(fileName);
         }
 
@@ -101,18 +103,16 @@ namespace WordSearch.Logic
 
         private static void CheckDbName(string dbName)
         {
-            var containedInvalidChars = Path.GetInvalidFileNameChars().Intersect(dbName).ToList();
-            if (containedInvalidChars.Any())
+            var isCorrect = DatabaseConstants.CorrectDatabaseNameRegex.IsMatch(dbName);
+            if (!isCorrect)
             {
-                var invalidCharsString = string.Concat(containedInvalidChars);
-                throw new DatabaseNameException(dbName,
-                    $"Contains invalid characters: \"{invalidCharsString}\"");
+                throw new DatabaseWrongNameException(dbName, "Contains invalid characters");
             }
         }
 
         private async Task CheckDbExistence(string dbName, bool shouldExist)
         {
-            var dbExists = await Exists(dbName);
+            var dbExists = await ExistsAsync(dbName);
             if (dbExists != shouldExist)
             {
                 throw shouldExist ? 
