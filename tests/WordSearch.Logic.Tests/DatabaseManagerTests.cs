@@ -38,11 +38,7 @@ namespace WordSearch.Logic.Tests
                 databaseConfig);
         }
 
-        [TestCase("a name")]
-        [TestCase("name+name")]
-        [TestCase("Some/Name")]
-        [TestCase("Some.Name")]
-        [TestCase("")]
+        [TestCaseSource(nameof(wrongDbNames))]
         public async Task CreateAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
         {
             SetDbExists(false);
@@ -108,6 +104,15 @@ namespace WordSearch.Logic.Tests
             charsFileWriterMock.Setup(x => x.WriteAsync(It.IsAny<string>()));
         }
 
+        [TestCaseSource(nameof(wrongDbNames))]
+        public async Task DeleteAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        {
+            SetDbExists(true);
+
+            await databaseManager.Invoking(x => x.DeleteAsync(dbName))
+                .Should().ThrowAsync<DatabaseWrongNameException>();
+        }
+
         [Test]
         public async Task DeleteAsync_WhenDatabaseNotExists_ThrowDatabaseNotFoundException()
         {
@@ -142,6 +147,15 @@ namespace WordSearch.Logic.Tests
             fileManagerMock.Verify(x => x.Delete(CharsFilePath), Times.Once());
         }
 
+        [TestCaseSource(nameof(wrongDbNames))]
+        public async Task GetAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        {
+            SetDbExists(true);
+
+            await databaseManager.Invoking(x => x.GetAsync(dbName))
+                .Should().ThrowAsync<DatabaseWrongNameException>();
+        }
+
         [Test]
         public async Task GetAsync_WhenDatabaseNotExists_ThrowDatabaseNotFoundException()
         {
@@ -162,8 +176,15 @@ namespace WordSearch.Logic.Tests
                 It.IsAny<IFileIO>(), It.IsAny<IFileIO>()));
         }
 
+        [TestCaseSource(nameof(wrongDbNames))]
+        public async Task ExistsAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        {
+            await databaseManager.Invoking(x => x.ExistsAsync(dbName))
+                .Should().ThrowAsync<DatabaseWrongNameException>();
+        }
+
         [Test]
-        public async Task ExistsAsync_CallsFileManagerExists()
+        public async Task ExistsAsync_CallsFileManagerExistsMethod()
         {
             await databaseManager.ExistsAsync(DatabaseName);
 
@@ -201,5 +222,10 @@ namespace WordSearch.Logic.Tests
 
             return result;
         }
+
+        private static readonly string[] wrongDbNames = new string[]
+        {
+            "a name", "name+name", "SomeName/", ".SomeName", "", null
+        };
     }
 }

@@ -25,7 +25,6 @@ namespace WordSearch.Logic
 
         public async Task CreateAsync(string dbName, string chars)
         {
-            CheckDbName(dbName);
             await CheckDbExistence(dbName, shouldExist: false);
 
             var wordsFilePath = GetWordsFilePath(dbName);
@@ -69,6 +68,7 @@ namespace WordSearch.Logic
 
         public async Task<bool> ExistsAsync(string dbName)
         {
+            CheckDbName(dbName);
             var wordsFilePath = GetWordsFilePath(dbName);
             var result = fileManager.Exists(wordsFilePath);
             return await Task.FromResult(result);
