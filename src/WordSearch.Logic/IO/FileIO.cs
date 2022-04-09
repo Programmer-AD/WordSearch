@@ -2,7 +2,7 @@
 
 namespace WordSearch.Logic.IO
 {
-    internal class FileMaker : IFileMaker
+    internal class FileIO : IFileIO
     {
     }
 }

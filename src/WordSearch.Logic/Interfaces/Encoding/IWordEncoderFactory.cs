@@ -2,6 +2,6 @@
 {
     public interface IWordEncoderFactory
     {
-        IWordEncoder CreateWordEncoder(string chars);
+        IWordEncoder MakeWordEncoder(string chars);
     }
 }

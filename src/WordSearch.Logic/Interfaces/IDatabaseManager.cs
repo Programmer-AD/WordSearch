@@ -2,8 +2,8 @@
 {
     public interface IDatabaseManager
     {
-        Task CreateAsync(string name, string chars);
-        Task<IDatabase> GetAsync(string name);
-        Task DeleteAsync(string name);
+        Task CreateAsync(string dbName, string chars);
+        Task<IDatabase> GetAsync(string dbName);
+        Task DeleteAsync(string dbName);
     }
 }

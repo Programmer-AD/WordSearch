@@ -2,6 +2,7 @@
 {
     public interface IDatabase
     {
+        string Name { get; }
         string Chars { get; }
 
         Task AddAsync(string word);

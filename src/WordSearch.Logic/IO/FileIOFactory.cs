@@ -2,7 +2,7 @@
 
 namespace WordSearch.Logic.IO
 {
-    internal class FileWriterFactory : IFileWriterFactory
+    internal class FileIOFactory : IFileIOFactory
     {
     }
 }
