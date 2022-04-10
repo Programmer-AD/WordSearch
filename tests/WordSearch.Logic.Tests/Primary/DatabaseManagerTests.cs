@@ -228,7 +228,7 @@ namespace WordSearch.Logic.Tests.Primary
             fileManagerMock.Setup(x => x.Exists(It.IsAny<string>())).Returns(exists);
         }
 
-        private (Mock<IFileIO>, Mock<IFileReader>, Mock<IFileWriter>) MockFileIO(
+        private FileIOMock MockFileIO(
             string setupFactoryForValue)
         {
             var result = GlobalHelpers.MockFileIO();

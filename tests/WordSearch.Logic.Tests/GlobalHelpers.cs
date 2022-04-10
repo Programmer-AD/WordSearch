@@ -4,7 +4,7 @@ namespace WordSearch.Logic.Tests
 {
     internal static class GlobalHelpers
     {
-        public static (Mock<IFileIO>, Mock<IFileReader>, Mock<IFileWriter>) MockFileIO()
+        public static FileIOMock MockFileIO()
         {
             var fileIOMock = new Mock<IFileIO>();
             var fileReaderMock = new Mock<IFileReader>();
@@ -13,7 +13,11 @@ namespace WordSearch.Logic.Tests
             fileIOMock.SetupGet(x => x.Reader).Returns(fileReaderMock.Object);
             fileIOMock.SetupGet(x => x.Writer).Returns(fileWriterMock.Object);
 
-            return (fileIOMock, fileReaderMock, fileWriterMock);
+            return new(fileIOMock, fileReaderMock, fileWriterMock);
         }
     }
+    public record FileIOMock(
+        Mock<IFileIO> IOMock,
+        Mock<IFileReader> ReaderMock,
+        Mock<IFileWriter> WriterMock);
 }
