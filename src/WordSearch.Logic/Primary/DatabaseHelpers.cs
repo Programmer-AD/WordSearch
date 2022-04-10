@@ -4,7 +4,7 @@ namespace WordSearch.Logic.Primary
 {
     internal static class DatabaseHelpers
     {
-        public static byte GetDifference(byte[] charCounts1, byte[] charCounts2)
+        public static byte GetDifference(Span<byte> charCounts1, Span<byte> charCounts2)
         {
             byte result = 0;
 
@@ -18,8 +18,10 @@ namespace WordSearch.Logic.Primary
                 var resultVector = new Vector<byte>();
                 for (; i < acceleratedLength; i += vectorSize)
                 {
-                    var vector1 = (Vector<sbyte>)new Vector<byte>(charCounts1, i);
-                    var vector2 = (Vector<sbyte>)new Vector<byte>(charCounts2, i);
+                    var slice1 = charCounts1.Slice(i, vectorSize);
+                    var slice2 = charCounts2.Slice(i, vectorSize);
+                    var vector1 = (Vector<sbyte>)new Vector<byte>(slice1);
+                    var vector2 = (Vector<sbyte>)new Vector<byte>(slice2);
                     var absoluteDiff = (Vector<byte>)Vector.Abs(vector1 - vector2);
                     resultVector += absoluteDiff;
                 }

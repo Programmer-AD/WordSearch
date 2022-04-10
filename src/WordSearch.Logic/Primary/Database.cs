@@ -2,7 +2,6 @@
 using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.IO;
-using WordSearch.Logic.Models;
 
 namespace WordSearch.Logic.Primary
 {
@@ -11,7 +10,9 @@ namespace WordSearch.Logic.Primary
         private readonly IFileIO charsFile;
         private readonly IFileIO wordsFile;
         private readonly IWordEncoder wordEncoder;
+
         private readonly byte[] recordBuffer;
+        private CharsRecord charsRecord;
 
         public string Name { get; }
         public string Chars => wordEncoder.Chars;
@@ -22,7 +23,9 @@ namespace WordSearch.Logic.Primary
             this.charsFile = charsFile;
             this.wordsFile = wordsFile;
             this.wordEncoder = wordEncoder;
+
             recordBuffer = new byte[CharsRecord.GetByteSize(Chars.Length)];
+            charsRecord = new(recordBuffer);
         }
 
         public async Task AddAsync(string word)
@@ -32,13 +35,12 @@ namespace WordSearch.Logic.Primary
             var wordPosition = wordsFile.StreamPosition = wordsFile.StreamLength;
             await wordsFile.Writer.WriteAsync(word);
 
-            var charsRecord = new CharsRecord
-            {
-                CharCounts = wordEncoder.GetCharCounts(word),
-                WordPosition = wordPosition,
-            };
+            var charCounts = wordEncoder.GetCharCounts(word);
+
+            charsRecord.CharCounts = charCounts;
+            charsRecord.WordPosition = wordPosition;
+
             charsFile.StreamPosition = charsFile.StreamLength;
-            charsRecord.GetBytes(recordBuffer);
             await charsFile.Writer.WriteAsync(recordBuffer);
 
             await FlushFilesAsync();
@@ -67,13 +69,13 @@ namespace WordSearch.Logic.Primary
 
             while (charsFile.StreamPosition < charsFile.StreamLength)
             {
-                var record = await ReadRecordAsync();
+                await charsFile.Reader.GetBytesAsync(recordBuffer);
 
-                var diff = DatabaseHelpers.GetDifference(charCounts, record.CharCounts);
+                var diff = DatabaseHelpers.GetDifference(charCounts, charsRecord.CharCounts.Span);
 
                 if (diff <= maxDifference)
                 {
-                    var nearWord = await GetWordAsync(record.WordPosition);
+                    var nearWord = await GetWordAsync(charsRecord.WordPosition);
                     result.Add(nearWord);
                 }
             }
@@ -118,21 +120,14 @@ namespace WordSearch.Logic.Primary
             while (charsFile.StreamPosition < charsFile.StreamLength)
             {
                 var recordPosition = charsFile.StreamPosition;
-                var record = await ReadRecordAsync();
-                if (record.WordPosition == referencedPosition)
+                await charsFile.Reader.GetBytesAsync(recordBuffer);
+                if (charsRecord.WordPosition == referencedPosition)
                 {
                     return recordPosition;
                 }
             }
 
             return -1;
-        }
-
-        private async Task<CharsRecord> ReadRecordAsync()
-        {
-            await charsFile.Reader.GetBytesAsync(recordBuffer);
-            var result = new CharsRecord(recordBuffer, Chars.Length);
-            return result;
         }
 
         private async Task DeleteRecordAsync(long recordPosition)
