@@ -5,8 +5,7 @@ namespace WordSearch.Logic.IO
     internal class FileIO : IFileIO
     {
         public long StreamPosition { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public long StreamLength => throw new NotImplementedException();
+        public long StreamLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public IFileReader Reader { get; }
 

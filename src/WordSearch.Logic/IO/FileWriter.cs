@@ -14,7 +14,7 @@ namespace WordSearch.Logic.IO
             throw new NotImplementedException();
         }
 
-        public Task WriteAsync(Span<byte> bytes)
+        public Task WriteAsync(byte[] bytes)
         {
             throw new NotImplementedException();
         }

@@ -39,8 +39,6 @@ namespace WordSearch.Logic
 
             var charsFilePath = GetCharsFilePath(dbName);
             fileManager.Create(charsFilePath);
-            var charsFile = fileIOFactory.MakeFileIO(charsFilePath);
-            await charsFile.Writer.WriteAsync(chars);
         }
 
         public async Task DeleteAsync(string dbName)

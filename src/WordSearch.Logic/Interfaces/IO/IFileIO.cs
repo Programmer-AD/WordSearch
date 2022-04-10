@@ -3,7 +3,7 @@
     public interface IFileIO
     {
         long StreamPosition { get; set; }
-        long StreamLength { get; }
+        long StreamLength { get; set; }
 
         IFileReader Reader { get; }
         IFileWriter Writer { get; }

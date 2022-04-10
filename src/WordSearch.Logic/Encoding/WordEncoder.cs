@@ -11,7 +11,7 @@ namespace WordSearch.Logic.Encoding
             Chars = chars;
         }
 
-        public void GetBytes(string word, out Span<byte> bytes)
+        public byte[] GetCharCounts(string word)
         {
             throw new NotImplementedException();
         }

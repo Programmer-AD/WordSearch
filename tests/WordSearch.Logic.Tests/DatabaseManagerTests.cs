@@ -1,5 +1,5 @@
 ﻿using System.Xml.Linq;
-using WordSearch.Logic.Exceptions.Database;
+using WordSearch.Logic.Exceptions.DatabaseManager;
 using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.IO;
 
@@ -108,18 +108,6 @@ namespace WordSearch.Logic.Tests
             await databaseManager.CreateAsync(DatabaseName, Chars);
 
             fileManagerMock.Verify(x => x.Create(CharsFilePath), Times.Once());
-        }
-
-        [Test]
-        public async Task CreateAsync_InitCharsFile()
-        {
-            SetDbExists(false);
-            MockFileIO(WordsFilePath);
-            var (_, _, charsFileWriterMock) = MockFileIO(CharsFilePath);
-
-            await databaseManager.CreateAsync(DatabaseName, Chars);
-
-            charsFileWriterMock.Setup(x => x.WriteAsync(It.IsAny<string>()));
         }
 
         [TestCaseSource(nameof(wrongDbNames))]

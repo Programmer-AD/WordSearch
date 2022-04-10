@@ -4,6 +4,6 @@
     {
         string Chars { get; }
 
-        void GetBytes(string word, out Span<byte> bytes);
+        byte[] GetCharCounts(string word);
     }
 }

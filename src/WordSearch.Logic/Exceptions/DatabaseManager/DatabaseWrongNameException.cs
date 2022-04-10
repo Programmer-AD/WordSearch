@@ -1,4 +1,4 @@
-﻿namespace WordSearch.Logic.Exceptions.Database
+﻿namespace WordSearch.Logic.Exceptions.DatabaseManager
 {
     public class DatabaseWrongNameException : Exception
     {

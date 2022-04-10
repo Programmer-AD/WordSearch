@@ -3,6 +3,6 @@
     public interface IFileReader
     {
         Task<string> GetStringAsync();
-        Task GetBytesAsync(out Span<byte> bytes);
+        Task GetBytesAsync(byte[] bytes);
     }
 }
