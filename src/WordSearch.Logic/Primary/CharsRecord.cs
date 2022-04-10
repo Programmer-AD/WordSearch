@@ -1,6 +1,6 @@
 ﻿namespace WordSearch.Logic.Primary
 {
-    internal struct CharsRecord
+    public struct CharsRecord
     {
         private const int ConstFieldSize = sizeof(long);
 

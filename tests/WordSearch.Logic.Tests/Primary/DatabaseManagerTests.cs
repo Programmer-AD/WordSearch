@@ -188,7 +188,7 @@ namespace WordSearch.Logic.Tests.Primary
 
             await databaseManager.GetAsync(DatabaseName);
 
-            databaseFactoryMock.Verify(x => x.MakeDatabaseAsync(It.IsAny<string>(),
+            databaseFactoryMock.Verify(x => x.MakeDatabase(It.IsAny<string>(),
                 It.IsAny<IFileIO>(), It.IsAny<IFileIO>()));
         }
 

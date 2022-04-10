@@ -1,4 +1,4 @@
-﻿namespace WordSearch.Logic.Exceptions.Database
+﻿namespace WordSearch.Logic.Exceptions.WordsFile
 {
     internal class WordNotFoundException : Exception
     {

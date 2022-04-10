@@ -1,6 +1,7 @@
-﻿using WordSearch.Logic.Exceptions.Database;
+﻿using System.Collections.Generic;
+using System.Threading;
 using WordSearch.Logic.Interfaces.Encoders;
-using WordSearch.Logic.Interfaces.IO;
+using WordSearch.Logic.Interfaces.Primary.Files;
 using WordSearch.Logic.Primary;
 
 namespace WordSearch.Logic.Tests.Primary
@@ -13,22 +14,22 @@ namespace WordSearch.Logic.Tests.Primary
         private const string Word = "aboba1";
         private const byte MaxDifference = 2;
 
-        private FileIOMock charsFileMocks;
-        private FileIOMock wordsFileMocks;
+        private Mock<ICharsFile> charsFileMock;
+        private Mock<IWordsFile> wordsFileMock;
         private Mock<IWordEncoder> wordEncoderMock;
         private Database database;
 
         [SetUp]
         public void SetUp()
         {
-            charsFileMocks = GlobalHelpers.MockFileIO();
-            wordsFileMocks = GlobalHelpers.MockFileIO();
+            charsFileMock = new();
+            wordsFileMock = new();
             wordEncoderMock = new();
             wordEncoderMock.Setup(x => x.Chars).Returns(Chars);
 
             database = new(DatabaseName,
-                charsFileMocks.IOMock.Object,
-                wordsFileMocks.IOMock.Object,
+                charsFileMock.Object,
+                wordsFileMock.Object,
                 wordEncoderMock.Object);
         }
 
@@ -51,35 +52,11 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [Test]
-        public async Task AddAsync_WriteWordToWordsFile()
+        public async Task AddAsync_CallWordsFileAddAsync()
         {
             await database.AddAsync(Word);
-
-            wordsFileMocks.WriterMock.Verify(x => x.WriteAsync(It.IsAny<string>()));
-        }
-
-        [Test]
-        public async Task AddAsync_FlushesWordsFile()
-        {
-            await database.AddAsync(Word);
-
-            wordsFileMocks.WriterMock.Verify(x => x.FlushAsync());
-        }
-
-        [Test]
-        public async Task AddAsync_WritesBytesToCharsFile()
-        {
-            await database.AddAsync(Word);
-
-            charsFileMocks.WriterMock.Verify(x => x.WriteAsync(It.IsAny<byte[]>()));
-        }
-
-        [Test]
-        public async Task AddAsync_FlushesCharsFile()
-        {
-            await database.AddAsync(Word);
-
-            charsFileMocks.WriterMock.Verify(x => x.FlushAsync());
+            
+            wordsFileMock.Verify(x => x.AddAsync(It.IsAny<string>()));
         }
 
         [Test]
@@ -88,6 +65,14 @@ namespace WordSearch.Logic.Tests.Primary
             await database.AddAsync(Word);
 
             wordEncoderMock.Verify(x => x.GetCharCounts(It.IsAny<string>()));
+        }
+
+        [Test]
+        public async Task AddAsync_CallCharsFileAddAsync()
+        {
+            await database.AddAsync(Word);
+
+            charsFileMock.Verify(x => x.AddAsync(It.IsAny<Action<CharsRecord>>()));
         }
 
         [Test]
@@ -109,83 +94,33 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [Test]
-        public async Task DeleteAsync_WhenWordNotFound_ThrowsWordNotFoundException()
+        public async Task DeleteAsync_CallWordsFileDeleteAsyncWithCorrectParametr()
         {
-            await database.Invoking(x => x.DeleteAsync(Word))
-                .Should().ThrowAsync<WordNotFoundException>();
-        }
-
-        [Test]
-        public async Task DeleteAsync_WriteToWordsFile()
-        {
-            SetWordFound();
+            long wordPosition = 20;
+            wordsFileMock.Setup(x => x.GetWordPositionAsync(It.IsAny<string>()))
+                .ReturnsAsync(wordPosition);
+            long recordPosition = 100;
+            charsFileMock.Setup(x => x.GetRecordPositionByWordPosition(It.IsAny<long>()))
+                .ReturnsAsync(recordPosition);
 
             await database.DeleteAsync(Word);
 
-            wordsFileMocks.WriterMock.Verify(x => x.WriteAsync(It.IsAny<string>()));
+            wordsFileMock.Verify(x => x.DeleteAsync(wordPosition));
         }
 
         [Test]
-        public async Task DeleteAsync_WhenCharsRecordExists_WriteToCharsFile()
+        public async Task DeleteAsync_CallCharsFileDeleteAsyncWithCorrectParam()
         {
-            SetCharsFound();
-            SetWordFound();
+            long wordPosition = 20;
+            wordsFileMock.Setup(x => x.GetWordPositionAsync(It.IsAny<string>()))
+                .ReturnsAsync(wordPosition);
+            long recordPosition = 100;
+            charsFileMock.Setup(x => x.GetRecordPositionByWordPosition(It.IsAny<long>()))
+                .ReturnsAsync(recordPosition);
 
             await database.DeleteAsync(Word);
 
-            charsFileMocks.WriterMock.Verify(x => x.WriteAsync(It.IsAny<byte[]>()));
-        }
-
-        [Test]
-        public async Task DeleteAsync_WhenCharsRecordNotExists_NotWriteToCharsFile()
-        {
-            SetWordFound();
-
-            await database.DeleteAsync(Word);
-
-            charsFileMocks.WriterMock.Verify(x => x.WriteAsync(It.IsAny<byte[]>()), Times.Never());
-        }
-
-        [Test]
-        public async Task DeleteAsync_WhenCharsRecordExists_UpdateCharsFileSize()
-        {
-            SetCharsFound();
-            SetWordFound();
-
-            await database.DeleteAsync(Word);
-
-            charsFileMocks.IOMock.VerifySet(x => x.StreamLength = It.IsAny<long>());
-        }
-
-        [Test]
-        public async Task DeleteAsync_WhenCharsRecordNotExists_NotUpdateCharsFileSize()
-        {
-            SetWordFound();
-
-            await database.DeleteAsync(Word);
-
-            charsFileMocks.IOMock.VerifySet(x => x.StreamLength = It.IsAny<long>(), Times.Never());
-        }
-
-        [Test]
-        public async Task DeleteAsync_FlushesWordsFile()
-        {
-            SetWordFound();
-
-            await database.DeleteAsync(Word);
-
-            wordsFileMocks.WriterMock.Verify(x => x.FlushAsync());
-        }
-
-        [Test]
-        public async Task DeleteAsync_FlushesCharsFile()
-        {
-            SetCharsFound();
-            SetWordFound();
-
-            await database.DeleteAsync(Word);
-
-            charsFileMocks.WriterMock.Verify(x => x.FlushAsync());
+            charsFileMock.Verify(x => x.DeleteAsync(recordPosition));
         }
 
         [Test]
@@ -207,22 +142,15 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [Test]
-        public async Task GetWordsAsync_CallWordEncoderGetCharCountsOnce()
+        public async Task GetWordsAsync_CallsWordEncoderGetCharCountsOnce()
         {
+            var asyncEnumeratorMock = new Mock<IAsyncEnumerator<CharsRecord>>();
+            charsFileMock.Setup(x => x.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+                .Returns(asyncEnumeratorMock.Object);
+
             await database.GetWordsAsync(Word, MaxDifference);
 
             wordEncoderMock.Verify(x => x.GetCharCounts(It.IsAny<string>()), Times.Once());
-        }
-
-        private void SetWordFound()
-        {
-            wordsFileMocks.ReaderMock.Setup(x => x.GetStringAsync()).ReturnsAsync(Word);
-            wordsFileMocks.IOMock.Setup(x => x.StreamLength).Returns(1);
-        }
-
-        private void SetCharsFound()
-        {
-            charsFileMocks.IOMock.Setup(x => x.StreamLength).Returns(1);
         }
     }
 }

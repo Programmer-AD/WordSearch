@@ -58,12 +58,12 @@ namespace WordSearch.Logic.Primary
             await CheckDbExistence(dbName, shouldExist: true);
 
             var charsFilePath = GetCharsFilePath(dbName);
-            var charsFile = fileIOFactory.MakeFileIO(charsFilePath);
+            var charsFileIO = fileIOFactory.MakeFileIO(charsFilePath);
 
             var wordsFilePath = GetWordsFilePath(dbName);
-            var wordsFile = fileIOFactory.MakeFileIO(wordsFilePath);
+            var wordsFileIO = fileIOFactory.MakeFileIO(wordsFilePath);
 
-            var database = await databaseFactory.MakeDatabaseAsync(dbName, charsFile, wordsFile);
+            var database = databaseFactory.MakeDatabase(dbName, charsFileIO, wordsFileIO);
             return database;
         }
 

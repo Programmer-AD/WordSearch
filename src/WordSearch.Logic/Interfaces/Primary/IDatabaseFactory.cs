@@ -4,6 +4,6 @@ namespace WordSearch.Logic.Interfaces.Primary
 {
     public interface IDatabaseFactory
     {
-        Task<IDatabase> MakeDatabaseAsync(string dbName, IFileIO charsFile, IFileIO wordsFile);
+        IDatabase MakeDatabase(string dbName, IFileIO charsFileIO, IFileIO wordsFileIO);
     }
 }

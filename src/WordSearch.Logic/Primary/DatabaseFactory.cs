@@ -1,6 +1,7 @@
 ﻿using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.IO;
 using WordSearch.Logic.Interfaces.Primary;
+using WordSearch.Logic.Primary.Files;
 
 namespace WordSearch.Logic.Primary
 {
@@ -13,19 +14,13 @@ namespace WordSearch.Logic.Primary
             this.wordEncoderFactory = wordEncoderFactory;
         }
 
-        public async Task<IDatabase> MakeDatabaseAsync(string dbName, IFileIO charsFile, IFileIO wordsFile)
+        public IDatabase MakeDatabase(string dbName, IFileIO charsFileIO, IFileIO wordsFileIO)
         {
-            var wordEncoder = await GetWordEncoder(wordsFile);
+            var charsFile = new CharsFile(charsFileIO);
+            var wordsFile = new WordsFile(wordsFileIO);
+            var wordEncoder = wordEncoderFactory.MakeWordEncoder(wordsFile.Chars);
             var database = new Database(dbName, charsFile, wordsFile, wordEncoder);
             return database;
-        }
-
-        private async Task<IWordEncoder> GetWordEncoder(IFileIO wordsFile)
-        {
-            wordsFile.StreamPosition = 0;
-            var chars = await wordsFile.Reader.GetStringAsync();
-            var wordEncoder = wordEncoderFactory.MakeWordEncoder(chars);
-            return wordEncoder;
         }
     }
 }
