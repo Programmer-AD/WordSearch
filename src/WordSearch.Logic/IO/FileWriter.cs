@@ -1,22 +1,33 @@
-﻿using WordSearch.Logic.Interfaces.IO;
+﻿using System.Text;
+using WordSearch.Logic.Interfaces.IO;
 
 namespace WordSearch.Logic.IO
 {
     internal class FileWriter : IFileWriter
     {
-        public Task FlushAsync()
+        private readonly Stream stream;
+        private readonly BinaryWriter writer;
+
+        public FileWriter(Stream stream, Encoding encoding)
         {
-            throw new NotImplementedException();
+            this.stream = stream;
+            writer = new BinaryWriter(stream, encoding);
         }
 
-        public Task WriteAsync(string value)
+        public async Task FlushAsync()
         {
-            throw new NotImplementedException();
+            await stream.FlushAsync();
         }
 
-        public Task WriteAsync(byte[] bytes)
+        public async Task WriteAsync(string value)
         {
-            throw new NotImplementedException();
+            writer.Write(value);
+            await Task.CompletedTask;
+        }
+
+        public async Task WriteAsync(byte[] bytes)
+        {
+            await stream.WriteAsync(bytes);
         }
     }
 }

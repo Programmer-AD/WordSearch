@@ -1,9 +1,12 @@
 ﻿using WordSearch.Logic.Interfaces.IO;
+using Encoding = System.Text.Encoding;
 
 namespace WordSearch.Logic.IO
 {
     internal class FileIO : IFileIO, IDisposable
     {
+        private static readonly Encoding encoding = Encoding.UTF8;
+
         private readonly Stream stream;
         private readonly Lazy<FileReader> fileReaderLazy;
         private readonly Lazy<FileWriter> fileWriterLazy;
@@ -13,8 +16,8 @@ namespace WordSearch.Logic.IO
         public FileIO(Stream stream)
         {
             this.stream = stream;
-            fileReaderLazy = new Lazy<FileReader>();
-            fileWriterLazy = new Lazy<FileWriter>();
+            fileReaderLazy = new Lazy<FileReader>(() => new(stream, encoding));
+            fileWriterLazy = new Lazy<FileWriter>(() => new(stream, encoding));
         }
 
         public long StreamPosition

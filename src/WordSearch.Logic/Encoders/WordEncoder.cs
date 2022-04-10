@@ -1,6 +1,6 @@
-﻿using WordSearch.Logic.Interfaces.Encoding;
+﻿using WordSearch.Logic.Interfaces.Encoders;
 
-namespace WordSearch.Logic.Encoding
+namespace WordSearch.Logic.Encoders
 {
     internal class WordEncoder : IWordEncoder
     {

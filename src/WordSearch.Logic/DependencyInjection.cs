@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using WordSearch.Logic.Encoding;
+using WordSearch.Logic.Encoders;
 using WordSearch.Logic.Interfaces;
-using WordSearch.Logic.Interfaces.Encoding;
+using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.IO;
 using WordSearch.Logic.IO;
 

@@ -1,6 +1,5 @@
-﻿using WordSearch.Logic.Encoding;
-using WordSearch.Logic.Interfaces;
-using WordSearch.Logic.Interfaces.Encoding;
+﻿using WordSearch.Logic.Interfaces;
+using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.IO;
 
 namespace WordSearch.Logic

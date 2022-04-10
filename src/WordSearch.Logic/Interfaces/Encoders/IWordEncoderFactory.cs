@@ -1,4 +1,4 @@
-﻿namespace WordSearch.Logic.Interfaces.Encoding
+﻿namespace WordSearch.Logic.Interfaces.Encoders
 {
     public interface IWordEncoderFactory
     {
