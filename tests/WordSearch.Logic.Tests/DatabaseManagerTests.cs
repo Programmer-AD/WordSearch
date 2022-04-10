@@ -61,7 +61,16 @@ namespace WordSearch.Logic.Tests
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, null))
+            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, string.Empty))
+                .Should().ThrowAsync<ArgumentException>();
+        }
+
+        [Test]
+        public async Task CreateAsync_WhenCharsContainsSameCharTwice_ThrowArgumentException()
+        {
+            SetDbExists(false);
+
+            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, "1213"))
                 .Should().ThrowAsync<ArgumentException>();
         }
 

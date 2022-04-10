@@ -26,10 +26,7 @@ namespace WordSearch.Logic
 
         public async Task CreateAsync(string dbName, string chars)
         {
-            if (string.IsNullOrEmpty(chars))
-            {
-                throw new ArgumentException("Chars must not be null or empty", nameof(chars));
-            }
+            CheckChars(chars);
 
             await CheckDbExistence(dbName, shouldExist: false);
 
@@ -103,6 +100,20 @@ namespace WordSearch.Logic
         private string GetDatabasePath(string fileName)
         {
             return Path.Combine(config.DatabaseDirectory, fileName);
+        }
+
+
+        private static void CheckChars(string chars)
+        {
+            if (string.IsNullOrEmpty(chars))
+            {
+                throw new ArgumentException("Chars must not be null or empty", nameof(chars));
+            }
+            var charSet = chars.ToHashSet();
+            if (charSet.Count < chars.Length)
+            {
+                throw new ArgumentException("Chars must not contain same character twice", nameof(chars));
+            }
         }
 
         private static void CheckDbName(string dbName)
