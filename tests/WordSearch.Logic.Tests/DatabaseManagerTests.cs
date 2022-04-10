@@ -1,4 +1,4 @@
-﻿using System.Xml.Linq;
+﻿using Microsoft.Extensions.Options;
 using WordSearch.Logic.Exceptions.DatabaseManager;
 using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.IO;
@@ -35,7 +35,7 @@ namespace WordSearch.Logic.Tests
                 fileManagerMock.Object,
                 fileIOFactoryMock.Object,
                 databaseFactoryMock.Object,
-                databaseConfig);
+                Options.Create(databaseConfig));
         }
 
         [TestCaseSource(nameof(wrongDbNames))]

@@ -1,4 +1,5 @@
-﻿using WordSearch.Logic.Exceptions.Database;
+﻿using Microsoft.Extensions.Options;
+using WordSearch.Logic.Exceptions.DatabaseManager;
 using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.IO;
 
@@ -15,9 +16,9 @@ namespace WordSearch.Logic
             IFileManager fileManager,
             IFileIOFactory fileIOFactory,
             IDatabaseFactory databaseFactory,
-            DatabaseConfig config = null)
+            IOptions<DatabaseConfig> config = null)
         {
-            this.config = config ?? DatabaseConstants.DefaultConfig;
+            this.config = config.Value ?? DatabaseConstants.DefaultConfig;
             this.fileManager = fileManager;
             this.fileIOFactory = fileIOFactory;
             this.databaseFactory = databaseFactory;
