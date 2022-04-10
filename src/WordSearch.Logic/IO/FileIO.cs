@@ -35,7 +35,7 @@ namespace WordSearch.Logic.IO
         public IFileReader Reader => fileReaderLazy.Value;
         public IFileWriter Writer => fileWriterLazy.Value;
 
-        protected virtual void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
