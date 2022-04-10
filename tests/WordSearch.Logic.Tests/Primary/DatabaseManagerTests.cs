@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using WordSearch.Logic.Exceptions.DatabaseManager;
-using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.IO;
+using WordSearch.Logic.Interfaces.Primary;
 using WordSearch.Logic.Primary;
 
 namespace WordSearch.Logic.Tests.Primary

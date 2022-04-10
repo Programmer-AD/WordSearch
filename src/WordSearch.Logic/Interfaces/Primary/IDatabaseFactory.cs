@@ -1,6 +1,6 @@
 ﻿using WordSearch.Logic.Interfaces.IO;
 
-namespace WordSearch.Logic.Interfaces
+namespace WordSearch.Logic.Interfaces.Primary
 {
     public interface IDatabaseFactory
     {

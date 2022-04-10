@@ -1,4 +1,4 @@
-﻿namespace WordSearch.Logic.Interfaces
+﻿namespace WordSearch.Logic.Interfaces.Primary
 {
     public interface IDatabaseManager
     {
