@@ -4,7 +4,7 @@ using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.IO;
 using WordSearch.Logic.Models;
 
-namespace WordSearch.Logic
+namespace WordSearch.Logic.Primary
 {
     internal class Database : IDatabase
     {

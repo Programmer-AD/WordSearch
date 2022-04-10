@@ -4,6 +4,7 @@ using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.IO;
 using WordSearch.Logic.IO;
+using WordSearch.Logic.Primary;
 
 namespace WordSearch.Logic
 {

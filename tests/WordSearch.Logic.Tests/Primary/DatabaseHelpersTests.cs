@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using WordSearch.Logic.Primary;
 
-namespace WordSearch.Logic.Tests
+namespace WordSearch.Logic.Tests.Primary
 {
     [TestFixture]
     public class DatabaseHelpersTests
@@ -16,7 +17,7 @@ namespace WordSearch.Logic.Tests
             result.Should().Be(expected);
         }
 
-        private static readonly IEnumerable<object[]> DataSource = new object[][] 
+        private static readonly IEnumerable<object[]> DataSource = new object[][]
         {
             GetDataRow(2, 0),
             GetDataRow(1, 2, (0, 2)),

@@ -1,4 +1,4 @@
-﻿namespace WordSearch.Logic
+﻿namespace WordSearch.Logic.Primary
 {
     public class DatabaseConfig
     {

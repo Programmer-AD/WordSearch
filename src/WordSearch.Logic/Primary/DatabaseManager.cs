@@ -3,7 +3,7 @@ using WordSearch.Logic.Exceptions.DatabaseManager;
 using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.IO;
 
-namespace WordSearch.Logic
+namespace WordSearch.Logic.Primary
 {
     internal class DatabaseManager : IDatabaseManager
     {
@@ -138,7 +138,7 @@ namespace WordSearch.Logic
             var dbExists = await ExistsAsync(dbName);
             if (dbExists != shouldExist)
             {
-                throw shouldExist ? 
+                throw shouldExist ?
                     new DatabaseNotFoundException(dbName) :
                     new DatabaseAlreadyExistsException(dbName);
             }

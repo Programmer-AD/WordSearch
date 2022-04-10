@@ -2,7 +2,7 @@
 using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.IO;
 
-namespace WordSearch.Logic
+namespace WordSearch.Logic.Primary
 {
     internal class DatabaseFactory : IDatabaseFactory
     {

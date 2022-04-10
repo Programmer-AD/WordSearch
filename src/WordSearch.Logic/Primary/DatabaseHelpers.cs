@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace WordSearch.Logic
+namespace WordSearch.Logic.Primary
 {
     internal static class DatabaseHelpers
     {

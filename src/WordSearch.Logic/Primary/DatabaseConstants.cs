@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace WordSearch.Logic
+namespace WordSearch.Logic.Primary
 {
     internal static class DatabaseConstants
     {

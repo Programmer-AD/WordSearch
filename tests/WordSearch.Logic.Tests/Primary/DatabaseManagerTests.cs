@@ -2,8 +2,9 @@
 using WordSearch.Logic.Exceptions.DatabaseManager;
 using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.IO;
+using WordSearch.Logic.Primary;
 
-namespace WordSearch.Logic.Tests
+namespace WordSearch.Logic.Tests.Primary
 {
     [TestFixture]
     public class DatabaseManagerTests
