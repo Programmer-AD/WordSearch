@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using WordSearch.Logic.Exceptions.Database;
+﻿using WordSearch.Logic.Exceptions.Database;
 using WordSearch.Logic.Interfaces;
 using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.IO;
@@ -70,7 +69,7 @@ namespace WordSearch.Logic
             {
                 var record = await ReadRecordAsync();
 
-                var diff = GetDifference(charCounts, record.CharCounts);
+                var diff = DatabaseHelpers.GetDifference(charCounts, record.CharCounts);
 
                 if (diff <= maxDifference)
                 {
@@ -152,25 +151,6 @@ namespace WordSearch.Logic
             var fillerString = new string('\0', word.Length);
             wordsFile.StreamPosition = wordPosition;
             await wordsFile.Writer.WriteAsync(fillerString);
-        }
-
-        private static byte GetDifference(byte[] charCounts1, byte[] charCounts2)
-        {
-            byte result = 0;
-
-            int i = 0;
-            var vectorSize = Vector<byte>.Count;
-            var operationCount = charCounts1.Length / vectorSize;
-
-            for (int o = 0; o < operationCount; o++, i += vectorSize)
-            {
-                var vector1 = new Vector<byte>(charCounts1, i);
-                var vector2 = new Vector<byte>(charCounts2, i);
-                var absoulteDiff = Vector.Abs(vector1 - vector2);
-                result += Vector.Dot(absoulteDiff, Vector<byte>.One);
-            }
-
-            return result;
         }
 
         private async Task<string> GetWordAsync(long wordPosition)
