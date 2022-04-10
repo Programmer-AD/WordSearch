@@ -16,6 +16,11 @@ namespace WordSearch.Logic.Encoders
 
         public byte[] GetCharCounts(string word)
         {
+            if (word == null)
+            {
+                throw new ArgumentNullException(nameof(word));
+            }
+
             var result = new byte[Chars.Length];
             foreach (var @char in word)
             {

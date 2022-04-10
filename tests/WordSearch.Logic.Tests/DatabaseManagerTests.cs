@@ -219,7 +219,7 @@ namespace WordSearch.Logic.Tests
 
             var result = await databaseManager.GetDbNamesAsync();
 
-            result.Should().BeEquivalentTo(expected);
+            result.Should().Equal(expected);
         }
 
         private void SetDbExists(bool exists)
