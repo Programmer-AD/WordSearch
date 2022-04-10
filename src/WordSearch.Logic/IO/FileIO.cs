@@ -2,13 +2,53 @@
 
 namespace WordSearch.Logic.IO
 {
-    internal class FileIO : IFileIO
+    internal class FileIO : IFileIO, IDisposable
     {
-        public long StreamPosition { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public long StreamLength { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private readonly Stream stream;
+        private readonly Lazy<FileReader> fileReaderLazy;
+        private readonly Lazy<FileWriter> fileWriterLazy;
 
-        public IFileReader Reader { get; }
+        private bool disposedValue;
 
-        public IFileWriter Writer { get; }
+        public FileIO(Stream stream)
+        {
+            this.stream = stream;
+            fileReaderLazy = new Lazy<FileReader>();
+            fileWriterLazy = new Lazy<FileWriter>();
+        }
+
+        public long StreamPosition
+        {
+            get => stream.Position;
+            set => stream.Position = value;
+        }
+
+        public long StreamLength
+        {
+            get => stream.Length;
+            set => stream.SetLength(value);
+        }
+
+        public IFileReader Reader => fileReaderLazy.Value;
+        public IFileWriter Writer => fileWriterLazy.Value;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    stream.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

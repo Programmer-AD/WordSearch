@@ -6,7 +6,9 @@ namespace WordSearch.Logic.IO
     {
         public IFileIO MakeFileIO(string filePath)
         {
-            throw new NotImplementedException();
+            var stream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            var fileIO = new FileIO(stream);
+            return fileIO;
         }
     }
 }
