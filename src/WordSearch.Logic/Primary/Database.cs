@@ -54,7 +54,7 @@ namespace WordSearch.Logic.Primary
             var recordPosition = await FindRecordPositionWithReferenceAsync(wordPosition);
 
             await Task.WhenAll(
-                DeleteRecordAsync(recordPosition),
+                DeleteCharsRecordAsync(recordPosition),
                 DeleteWordAsync(word, wordPosition));
 
             await FlushFilesAsync();
@@ -130,7 +130,7 @@ namespace WordSearch.Logic.Primary
             return -1;
         }
 
-        private async Task DeleteRecordAsync(long recordPosition)
+        private async Task DeleteCharsRecordAsync(long recordPosition)
         {
             if (recordPosition >= 0)
             {
@@ -138,6 +138,7 @@ namespace WordSearch.Logic.Primary
                 await charsFile.Reader.GetBytesAsync(recordBuffer);
                 charsFile.StreamPosition = recordPosition;
                 await charsFile.Writer.WriteAsync(recordBuffer);
+                charsFile.StreamLength -= recordBuffer.Length;
             }
         }
 
