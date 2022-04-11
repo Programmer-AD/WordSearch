@@ -14,22 +14,19 @@ namespace WordSearch.Logic.IO
             writer = new BinaryWriter(stream, encoding);
         }
 
-        public async Task Flush()
+        public void Flush()
         {
             stream.Flush();
-            await Task.CompletedTask;
         }
 
-        public async Task Write(string value)
+        public void Write(string value)
         {
             writer.Write(value);
-            await Task.CompletedTask;
         }
 
-        public async Task Write(ReadOnlyMemory<byte> bytes)
+        public void Write(ReadOnlyMemory<byte> bytes)
         {
             stream.Write(bytes.Span);
-            await Task.CompletedTask;
         }
     }
 }
