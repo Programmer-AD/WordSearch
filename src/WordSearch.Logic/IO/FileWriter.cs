@@ -16,7 +16,8 @@ namespace WordSearch.Logic.IO
 
         public async Task FlushAsync()
         {
-            await stream.FlushAsync();
+            stream.Flush();
+            await Task.CompletedTask;
         }
 
         public async Task WriteAsync(string value)
@@ -27,7 +28,8 @@ namespace WordSearch.Logic.IO
 
         public async Task WriteAsync(ReadOnlyMemory<byte> bytes)
         {
-            await stream.WriteAsync(bytes);
+            stream.Write(bytes.Span);
+            await Task.CompletedTask;
         }
     }
 }

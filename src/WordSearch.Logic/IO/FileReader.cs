@@ -16,7 +16,7 @@ namespace WordSearch.Logic.IO
 
         public async Task<int> GetBytesAsync(Memory<byte> bytes)
         {
-            var readed = await stream.ReadAsync(bytes);
+            var readed = await Task.FromResult(reader.Read(bytes.Span));
             return readed;
         }
 
