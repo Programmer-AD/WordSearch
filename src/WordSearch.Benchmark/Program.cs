@@ -20,39 +20,20 @@ namespace WordSearch.Benchmark
 
             var database = await GetDatabase();
 
-            int i = 0;
-            var previousTime = TimeSpan.Zero;
-            for (int count = 10; count <= MaxOperationCount; count *= 10)
-            {
-                var addTime = await Benchmark(async () =>
-                {
-                    for (; i < count; i++)
-                    {
-                        await database.AddAsync(i.ToString());
-                    }
-                });
-                previousTime += addTime;
-                Console.WriteLine($"AddAsync\t{count}\t{previousTime}");
-            }
+            await BenchmarkMultiTimes(
+                async i => await database.AddAsync(i.ToString()),
+                (count, time) => Console.WriteLine($"AddAsync\t{count}\t{time}"));
 
-            i = 0;
-            previousTime = TimeSpan.Zero;
-            for (int count = 10; count <= MaxOperationCount; count *= 10)
-            {
-                var addTime = await Benchmark(async () =>
-                {
-                    for (; i < count; i++)
-                    {
-                        await database.DeleteAsync((MaxOperationCount - 1 - i).ToString());
-                    }
-                });
-                previousTime += addTime;
-                Console.WriteLine($"DeleteAsync\t{count}\t{previousTime}");
-            }
+            await BenchmarkMultiTimes(
+                async i => await database.GetWordsAsync(i.ToString(), 1),
+                (count, time) => Console.WriteLine($"GetWordsAsync\t{count}\t{time}"));
+
+            await BenchmarkMultiTimes(
+                async i => await database.DeleteAsync((MaxOperationCount - 1 - i).ToString()),
+                (count, time) => Console.WriteLine($"DeleteAsync\t{count}\t{time}"));
 
             Console.WriteLine("Benchmark finish");
             Directory.Delete(DirectoryName, true);
-            Console.ReadLine();
             Console.ReadLine();
         }
 
@@ -80,6 +61,24 @@ namespace WordSearch.Benchmark
             await func();
             var endTime = DateTime.Now;
             return endTime - startTime;
+        }
+
+        private static async Task BenchmarkMultiTimes(Func<int, Task> func, Action<int, TimeSpan> callback)
+        {
+            int i = 0;
+            var previousTime = TimeSpan.Zero;
+            for (int count = 10; count <= MaxOperationCount; count *= 10)
+            {
+                var addTime = await Benchmark(async () =>
+                {
+                    for (; i < count; i++)
+                    {
+                        await func(i);
+                    }
+                });
+                previousTime += addTime;
+                callback(count, previousTime);
+            }
         }
     }
 }
