@@ -22,6 +22,8 @@ namespace WordSearch.Logic.Primary
             this.fileManager = fileManager;
             this.fileIOFactory = fileIOFactory;
             this.databaseFactory = databaseFactory;
+
+            EnsureDirectoryCreated();
         }
 
         public async Task CreateAsync(string dbName, string chars)
@@ -80,9 +82,18 @@ namespace WordSearch.Logic.Primary
             var fileFormat = DatabaseConstants.DatabaseWordFileExtension;
             var dbNames = fileManager.GetDirectoryFiles(config.DatabaseDirectoryPath)
                 .Where(x => x.EndsWith(fileFormat))
-                .Select(x => x[..^fileFormat.Length]);
+                .Select(x => Path.GetFileName(x[..^fileFormat.Length]));
 
             return await Task.FromResult(dbNames);
+        }
+
+        private void EnsureDirectoryCreated()
+        {
+            var directoryPath = config.DatabaseDirectoryPath;
+            if (!fileManager.DirectoryExists(directoryPath))
+            {
+                fileManager.CreateDirectory(directoryPath);
+            }
         }
 
         internal string GetCharsFilePath(string dbName)
@@ -101,7 +112,6 @@ namespace WordSearch.Logic.Primary
         {
             return Path.Combine(config.DatabaseDirectoryPath, fileName);
         }
-
 
         private static void CheckChars(string chars)
         {
