@@ -16,9 +16,12 @@ namespace WordSearch.Logic.Primary
 
         public IDatabase MakeDatabase(string dbName, IFileIO charsFileIO, IFileIO wordsFileIO)
         {
-            var charsFile = new CharsFile(charsFileIO);
             var wordsFile = new WordsFile(wordsFileIO);
-            var wordEncoder = wordEncoderFactory.MakeWordEncoder(wordsFile.Chars);
+
+            var chars = wordsFile.Chars;
+            var charsFile = new CharsFile(charsFileIO, chars.Length);
+            var wordEncoder = wordEncoderFactory.MakeWordEncoder(chars);
+
             var database = new Database(dbName, charsFile, wordsFile, wordEncoder);
             return database;
         }

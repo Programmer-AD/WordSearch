@@ -1,42 +1,102 @@
-﻿using WordSearch.Logic.Interfaces.IO;
+﻿using WordSearch.Logic.Exceptions.WordsFile;
+using WordSearch.Logic.Interfaces.IO;
 using WordSearch.Logic.Interfaces.Primary.Files;
 
 namespace WordSearch.Logic.Primary.Files
 {
     internal class WordsFile : IWordsFile
     {
-        private readonly IFileIO wordsFileIO;
+        private readonly IFileIO fileIO;
 
-        public WordsFile(IFileIO wordsFileIO)
+        private readonly Lazy<string> charsLazy;
+
+        public WordsFile(IFileIO fileIO)
         {
-            this.wordsFileIO = wordsFileIO;
+            this.fileIO = fileIO;
+
+            charsLazy = new Lazy<string>(ReadChars);
         }
 
-        public string Chars => throw new NotImplementedException();
+        public string Chars => charsLazy.Value;
+        private long WordsStartStreamPosition => charsLazy.Value.Length;
 
-        public Task<long> AddAsync(string word)
+        public async Task<long> AddAsync(string word)
         {
-            throw new NotImplementedException();
+            await CheckWordAlreadyExistsAsync(word);
+
+            var wordPosition = fileIO.StreamPosition = fileIO.StreamLength;
+            await fileIO.Writer.WriteAsync(word);
+            await fileIO.Writer.FlushAsync();
+            return wordPosition;
         }
 
-        public Task DeleteAsync(long position)
+        public async Task DeleteAsync(long position)
         {
-            throw new NotImplementedException();
+            var word = await GetWordAsync(position);
+            var substitute = new string('\0', word.Length);
+
+            fileIO.StreamPosition = position;
+            await fileIO.Writer.WriteAsync(substitute);
+            await fileIO.Writer.FlushAsync();
         }
 
-        public IAsyncEnumerator<string> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerator<string> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var enumerator = GetPositionedWordsAsyncEnumerable();
+            await foreach (var (_, word) in enumerator)
+            {
+                yield return word;
+            }
         }
 
-        public Task<string> GetWordAsync(long position)
+        public async Task<string> GetWordAsync(long position)
         {
-            throw new NotImplementedException();
+            fileIO.StreamPosition = position;
+            var result = await fileIO.Reader.GetStringAsync();
+            return result;
         }
 
-        public Task<long> GetWordPositionAsync(string word)
+        public async Task<long> GetWordPositionAsync(string word)
         {
-            throw new NotImplementedException();
+            var enumerator = GetPositionedWordsAsyncEnumerable();
+            await foreach (var (position, currentWord) in enumerator)
+            {
+                if (currentWord == word)
+                {
+                    return position;
+                }
+            }
+
+            throw new WordNotFoundException(word);
+        }
+
+        private string ReadChars()
+        {
+            fileIO.StreamPosition = 0;
+            var readingTask = fileIO.Reader.GetStringAsync();
+            var chars = readingTask.Result;
+            return chars;
+        }
+
+        private async Task CheckWordAlreadyExistsAsync(string word)
+        {
+            try
+            {
+                await GetWordPositionAsync(word);
+                throw new WordAlreadyExistsException(word);
+            }
+            catch (WordNotFoundException) { }
+        }
+
+        private async IAsyncEnumerable<(long position, string word)> GetPositionedWordsAsyncEnumerable()
+        {
+            fileIO.StreamPosition = WordsStartStreamPosition;
+            while (fileIO.StreamPosition < fileIO.StreamLength)
+            {
+                var position = fileIO.StreamPosition;
+                var word = await fileIO.Reader.GetStringAsync();
+                yield return (position, word);
+            }
         }
     }
 }
