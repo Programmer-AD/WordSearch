@@ -11,26 +11,26 @@ namespace WordSearch.Benchmark
         const string DirectoryName = "./test_dbs";
         private const int MaxOperationCount = 10000;
 
-        private static async Task Main()
+        private static void Main()
         {
             if (Directory.Exists(DirectoryName))
             {
                 Directory.Delete(DirectoryName, true);
             }
 
-            var database = await GetDatabase();
+            var database = GetDatabase();
 
-            await BenchmarkMultiTimes(
-                async i => await database.Add(i.ToString()),
-                (count, time) => Console.WriteLine($"AddAsync\t{count}\t{time}"));
+            BenchmarkMultiTimes(
+                i => database.Add(i.ToString()),
+                (count, time) => Console.WriteLine($"Add\t{count}\t{time}"));
 
-            await BenchmarkMultiTimes(
-                async i => await database.GetWords(i.ToString(), 1),
-                (count, time) => Console.WriteLine($"GetWordsAsync\t{count}\t{time}"));
+            BenchmarkMultiTimes(
+                i => database.GetWords(i.ToString(), 1),
+                (count, time) => Console.WriteLine($"GetWords\t{count}\t{time}"));
 
-            await BenchmarkMultiTimes(
-                async i => await database.Delete((MaxOperationCount - 1 - i).ToString()),
-                (count, time) => Console.WriteLine($"DeleteAsync\t{count}\t{time}"));
+            BenchmarkMultiTimes(
+                i => database.Delete((MaxOperationCount - 1 - i).ToString()),
+                (count, time) => Console.WriteLine($"Delete\t{count}\t{time}"));
 
             Console.WriteLine("Benchmark finish");
             Directory.Delete(DirectoryName, true);
@@ -45,35 +45,36 @@ namespace WordSearch.Benchmark
             return provider;
         }
 
-        private static async Task<IDatabase> GetDatabase()
+        private static IDatabase GetDatabase()
         {
             var provider = GetServiceProvider();
             var dbManager = provider.GetRequiredService<IDatabaseManager>();
 
-            await dbManager.Create(DbName, Chars);
-            var database = await dbManager.Get(DbName);
+            dbManager.Create(DbName, Chars);
+            var database = dbManager.Get(DbName);
             return database;
         }
 
-        private static async Task<TimeSpan> Benchmark(Func<Task> func)
+        private static TimeSpan Benchmark(Action action)
         {
             var startTime = DateTime.Now;
-            await func();
+            action();
             var endTime = DateTime.Now;
-            return endTime - startTime;
+            var result = endTime - startTime;
+            return result;
         }
 
-        private static async Task BenchmarkMultiTimes(Func<int, Task> func, Action<int, TimeSpan> callback)
+        private static void BenchmarkMultiTimes(Action<int> action, Action<int, TimeSpan> callback)
         {
             int i = 0;
             var previousTime = TimeSpan.Zero;
             for (int count = 10; count <= MaxOperationCount; count *= 10)
             {
-                var addTime = await Benchmark(async () =>
+                var addTime = Benchmark(() =>
                 {
                     for (; i < count; i++)
                     {
-                        await func(i);
+                        action(i);
                     }
                 });
                 previousTime += addTime;
