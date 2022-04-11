@@ -7,7 +7,7 @@ namespace WordSearch.Logic.IO
         public IFileIO MakeFileIO(string filePath)
         {
             var stream = new FileStream(filePath,
-                FileMode.OpenOrCreate, 
+                FileMode.OpenOrCreate,
                 FileAccess.ReadWrite,
                 FileShare.Delete | FileShare.ReadWrite);
 

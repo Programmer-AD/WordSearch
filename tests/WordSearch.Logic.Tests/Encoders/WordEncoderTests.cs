@@ -30,11 +30,11 @@ namespace WordSearch.Logic.Tests.Encoders
                 .Should().Throw<ArgumentNullException>();
         }
 
-        [TestCase(Chars, new byte[] { 1, 1, 1, 1})]
-        [TestCase("aaaaa", new byte[] { 5, 0, 0, 0})]
-        [TestCase("aba1", new byte[] { 2, 1, 1, 0})]
-        [TestCase("221", new byte[] { 0, 0, 1, 2})]
-        [TestCase("", new byte[] { 0, 0, 0, 0})]
+        [TestCase(Chars, new byte[] { 1, 1, 1, 1 })]
+        [TestCase("aaaaa", new byte[] { 5, 0, 0, 0 })]
+        [TestCase("aba1", new byte[] { 2, 1, 1, 0 })]
+        [TestCase("221", new byte[] { 0, 0, 1, 2 })]
+        [TestCase("", new byte[] { 0, 0, 0, 0 })]
         public void GetCharCounts_CountsCorrectly(string word, byte[] expected)
         {
             var result = wordEncoder.GetCharCounts(word);
@@ -42,8 +42,8 @@ namespace WordSearch.Logic.Tests.Encoders
             result.Should().Equal(expected);
         }
 
-        [TestCase("999", new byte[] { 0, 0, 0, 0})]
-        [TestCase("_ax-b9", new byte[] { 1, 1, 0, 0})]
+        [TestCase("999", new byte[] { 0, 0, 0, 0 })]
+        [TestCase("_ax-b9", new byte[] { 1, 1, 0, 0 })]
         public void GetCharCounts_FiltersOtherChar(string word, byte[] expected)
         {
             var result = wordEncoder.GetCharCounts(word);

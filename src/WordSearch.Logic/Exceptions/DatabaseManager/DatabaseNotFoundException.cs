@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace WordSearch.Logic.Exceptions.DatabaseManager
+﻿namespace WordSearch.Logic.Exceptions.DatabaseManager
 {
     public class DatabaseNotFoundException : Exception
     {

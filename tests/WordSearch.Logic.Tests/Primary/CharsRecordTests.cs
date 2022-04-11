@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using WordSearch.Logic.Primary;
+﻿using WordSearch.Logic.Primary;
 
 namespace WordSearch.Logic.Tests.Primary
 {

@@ -11,7 +11,7 @@ namespace WordSearch.Logic
     public static class DependencyInjection
     {
         public static IServiceCollection AddWordSearchDatabase(
-            this IServiceCollection services, 
+            this IServiceCollection services,
             Action<DatabaseConfig> configure = null)
         {
             services.AddScoped<IDatabaseManager, DatabaseManager>();
