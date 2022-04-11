@@ -21,47 +21,41 @@ namespace WordSearch.Logic.Primary
             this.wordEncoder = wordEncoder;
         }
 
-        public async Task Add(string word)
+        public void Add(string word)
         {
             CheckWord(word);
 
-            var wordPosition = await wordsFile.Add(word);
+            var wordPosition = wordsFile.Add(word);
             var charCounts = wordEncoder.GetCharCounts(word);
-            await charsFile.Add(record =>
+            charsFile.Add(record =>
             {
                 record.WordPosition = wordPosition;
                 record.CharCounts = charCounts;
             });
         }
 
-        public async Task Delete(string word)
+        public void Delete(string word)
         {
             CheckWord(word);
 
-            var wordPosition = await wordsFile.GetWordPosition(word);
-            var recordPosition = await charsFile.GetRecordPositionByWordPosition(wordPosition);
+            var wordPosition = wordsFile.GetWordPosition(word);
+            var recordPosition = charsFile.GetRecordPositionByWordPosition(wordPosition);
 
-            await Task.WhenAll(
-                wordsFile.Delete(wordPosition),
-                charsFile.Delete(recordPosition));
+            wordsFile.Delete(wordPosition);
+            charsFile.Delete(recordPosition);
         }
 
-        public async Task<IEnumerable<string>> GetWords(string word, byte maxDifference)
+        public IEnumerable<string> GetWords(string word, byte maxDifference)
         {
             CheckWord(word);
 
             var charCounts = wordEncoder.GetCharCounts(word);
-            var result = new List<string>();
-
-            await foreach (var charsRecord in charsFile)
+            var result = charsFile.Where(charsRecord =>
             {
                 var difference = DatabaseHelpers.GetDifference(charCounts, charsRecord.CharCounts.Span);
-                if (difference <= maxDifference)
-                {
-                    var nearWord = await wordsFile.GetWordAsync(charsRecord.WordPosition);
-                    result.Add(nearWord);
-                }
-            }
+                return difference > maxDifference;
+            }).Select(x => wordsFile.GetWord(x.WordPosition))
+            .ToList();
 
             return result;
         }

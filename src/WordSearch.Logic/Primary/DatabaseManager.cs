@@ -26,25 +26,25 @@ namespace WordSearch.Logic.Primary
             EnsureDirectoryCreated();
         }
 
-        public async Task Create(string dbName, string chars)
+        public void Create(string dbName, string chars)
         {
             CheckChars(chars);
 
-            await CheckDbExistence(dbName, shouldExist: false);
+            CheckDbExistence(dbName, shouldExist: false);
 
             var wordsFilePath = GetWordsFilePath(dbName);
             fileManager.Create(wordsFilePath);
             var wordsFile = fileIOFactory.MakeFileIO(wordsFilePath);
-            await wordsFile.Writer.Write(chars);
-            await wordsFile.Writer.Flush();
+            wordsFile.Writer.Write(chars);
+            wordsFile.Writer.Flush();
 
             var charsFilePath = GetCharsFilePath(dbName);
             fileManager.Create(charsFilePath);
         }
 
-        public async Task Delete(string dbName)
+        public void Delete(string dbName)
         {
-            await CheckDbExistence(dbName, shouldExist: true);
+            CheckDbExistence(dbName, shouldExist: true);
 
             var charsFilePath = GetCharsFilePath(dbName);
             if (fileManager.Exists(charsFilePath))
@@ -56,9 +56,9 @@ namespace WordSearch.Logic.Primary
             fileManager.Delete(wordsFilePath);
         }
 
-        public async Task<IDatabase> Get(string dbName)
+        public IDatabase Get(string dbName)
         {
-            await CheckDbExistence(dbName, shouldExist: true);
+            CheckDbExistence(dbName, shouldExist: true);
 
             var charsFilePath = GetCharsFilePath(dbName);
             var charsFileIO = fileIOFactory.MakeFileIO(charsFilePath);
@@ -70,22 +70,22 @@ namespace WordSearch.Logic.Primary
             return database;
         }
 
-        public async Task<bool> Exists(string dbName)
+        public bool Exists(string dbName)
         {
             CheckDbName(dbName);
             var wordsFilePath = GetWordsFilePath(dbName);
             var result = fileManager.Exists(wordsFilePath);
-            return await Task.FromResult(result);
+            return result;
         }
 
-        public async Task<IEnumerable<string>> GetDbNames()
+        public IEnumerable<string> GetDbNames()
         {
             var fileFormat = DatabaseConstants.DatabaseWordFileExtension;
-            var dbNames = fileManager.GetDirectoryFiles(config.DatabaseDirectoryPath)
+            var result = fileManager.GetDirectoryFiles(config.DatabaseDirectoryPath)
                 .Where(x => x.EndsWith(fileFormat))
                 .Select(x => Path.GetFileName(x[..^fileFormat.Length]));
 
-            return await Task.FromResult(dbNames);
+            return result;
         }
 
         private void EnsureDirectoryCreated()
@@ -144,9 +144,9 @@ namespace WordSearch.Logic.Primary
             }
         }
 
-        private async Task CheckDbExistence(string dbName, bool shouldExist)
+        private void CheckDbExistence(string dbName, bool shouldExist)
         {
-            var dbExists = await Exists(dbName);
+            var dbExists = Exists(dbName);
             if (dbExists != shouldExist)
             {
                 throw shouldExist ?
