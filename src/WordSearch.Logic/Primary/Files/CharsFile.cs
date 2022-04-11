@@ -70,9 +70,10 @@ namespace WordSearch.Logic.Primary.Files
         private async IAsyncEnumerable<(long position, CharsRecord record)> GetPositionedRecordsAsyncEnumerable()
         {
             fileIO.StreamPosition = 0;
-            while (fileIO.StreamPosition < fileIO.StreamLength)
+            var length = fileIO.StreamLength;
+            long position; 
+            while ((position = fileIO.StreamPosition) < length)
             {
-                var position = fileIO.StreamPosition;
                 await fileIO.Reader.GetBytesAsync(buffer);
                 yield return (position, record);
             }

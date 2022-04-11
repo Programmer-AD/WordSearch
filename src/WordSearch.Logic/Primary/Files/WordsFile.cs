@@ -92,9 +92,10 @@ namespace WordSearch.Logic.Primary.Files
         private async IAsyncEnumerable<(long position, string word)> GetPositionedWordsAsyncEnumerable()
         {
             fileIO.StreamPosition = wordsStartStreamPosition;
-            while (fileIO.StreamPosition < fileIO.StreamLength)
+            var length = fileIO.StreamLength;
+            long position;
+            while ((position = fileIO.StreamPosition) < length)
             {
-                var position = fileIO.StreamPosition;
                 var word = await fileIO.Reader.GetStringAsync();
                 yield return (position, word);
             }

@@ -14,9 +14,10 @@ namespace WordSearch.Logic.IO
             reader = new BinaryReader(stream, encoding);
         }
 
-        public async Task GetBytesAsync(byte[] bytes)
+        public async Task<int> GetBytesAsync(Memory<byte> bytes)
         {
-            await stream.ReadAsync(bytes);
+            var readed = await stream.ReadAsync(bytes);
+            return readed;
         }
 
         public async Task<string> GetStringAsync()

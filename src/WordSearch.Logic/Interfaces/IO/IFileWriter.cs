@@ -3,7 +3,7 @@
     public interface IFileWriter
     {
         Task WriteAsync(string value);
-        Task WriteAsync(byte[] bytes);
+        Task WriteAsync(ReadOnlyMemory<byte> bytes);
 
         Task FlushAsync();
     }

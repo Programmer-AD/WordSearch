@@ -25,7 +25,7 @@ namespace WordSearch.Logic.IO
             await Task.CompletedTask;
         }
 
-        public async Task WriteAsync(byte[] bytes)
+        public async Task WriteAsync(ReadOnlyMemory<byte> bytes)
         {
             await stream.WriteAsync(bytes);
         }
