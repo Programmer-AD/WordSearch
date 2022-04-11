@@ -139,6 +139,19 @@ namespace WordSearch.Logic.Tests.IntegrationTests
         }
 
         [Test]
+        public void Delete_CanDeleteLastWord()
+        {
+            database.Add(Word);
+            database.Add(WordD1);
+            database.Delete(WordD1);
+
+            database.Delete(Word);
+
+            var result = database.GetWords(Word, 1);
+            result.Should().BeEmpty();
+        }
+
+        [Test]
         public void Delete_WhenNoSearchedWord_ThrowWordNotFoundException()
         {
             database.Add(OtherWord);

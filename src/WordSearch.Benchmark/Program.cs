@@ -9,7 +9,12 @@ namespace WordSearch.Benchmark
         const string DbName = "SomeName";
         const string Chars = "0123456789";
         const string DirectoryName = "./test_dbs";
+
+#if DEBUG
+        private const int MaxOperationCount = 100;
+#else
         private const int MaxOperationCount = 10000;
+#endif
 
         private static void Main()
         {
