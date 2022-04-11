@@ -11,7 +11,7 @@ namespace WordSearch.Logic.Primary
 
         public static readonly DatabaseConfig DefaultConfig = new()
         {
-            DatabaseDirectory = "./dbs"
+            DatabaseDirectoryPath = "./dbs"
         };
     }
 }

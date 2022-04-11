@@ -2,6 +2,6 @@
 {
     public class DatabaseConfig
     {
-        public string DatabaseDirectory { get; set; }
+        public string DatabaseDirectoryPath { get; set; }
     }
 }

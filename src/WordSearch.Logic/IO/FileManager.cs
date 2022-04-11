@@ -9,9 +9,19 @@ namespace WordSearch.Logic.IO
             using var stream = File.Create(filePath);
         }
 
+        public void CreateDirectory(string directoryPath)
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
         public void Delete(string filePath)
         {
             File.Delete(filePath);
+        }
+
+        public bool DirectoryExists(string directoryPath)
+        {
+            return Directory.Exists(directoryPath);
         }
 
         public bool Exists(string filePath)

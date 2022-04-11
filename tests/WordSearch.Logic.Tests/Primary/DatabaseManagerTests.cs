@@ -14,7 +14,7 @@ namespace WordSearch.Logic.Tests.Primary
 
         private static readonly DatabaseConfig databaseConfig = new()
         {
-            DatabaseDirectory = "./test_dbs"
+            DatabaseDirectoryPath = "./test_dbs"
         };
 
         private Mock<IFileManager> fileManagerMock;

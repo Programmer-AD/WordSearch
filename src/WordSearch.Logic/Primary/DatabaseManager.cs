@@ -78,7 +78,7 @@ namespace WordSearch.Logic.Primary
         public async Task<IEnumerable<string>> GetDbNamesAsync()
         {
             var fileFormat = DatabaseConstants.DatabaseWordFileExtension;
-            var dbNames = fileManager.GetDirectoryFiles(config.DatabaseDirectory)
+            var dbNames = fileManager.GetDirectoryFiles(config.DatabaseDirectoryPath)
                 .Where(x => x.EndsWith(fileFormat))
                 .Select(x => x[..^fileFormat.Length]);
 
@@ -99,7 +99,7 @@ namespace WordSearch.Logic.Primary
 
         private string GetDatabasePath(string fileName)
         {
-            return Path.Combine(config.DatabaseDirectory, fileName);
+            return Path.Combine(config.DatabaseDirectoryPath, fileName);
         }
 
 
