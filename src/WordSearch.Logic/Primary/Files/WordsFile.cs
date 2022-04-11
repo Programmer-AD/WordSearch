@@ -18,7 +18,7 @@ namespace WordSearch.Logic.Primary.Files
         }
 
         public string Chars => charsLazy.Value;
-        private long WordsStartStreamPosition => charsLazy.Value.Length;
+        private long wordsStartStreamPosition;
 
         public async Task<long> AddAsync(string word)
         {
@@ -75,6 +75,7 @@ namespace WordSearch.Logic.Primary.Files
             fileIO.StreamPosition = 0;
             var readingTask = fileIO.Reader.GetStringAsync();
             var chars = readingTask.Result;
+            wordsStartStreamPosition = fileIO.StreamPosition;
             return chars;
         }
 
@@ -90,7 +91,7 @@ namespace WordSearch.Logic.Primary.Files
 
         private async IAsyncEnumerable<(long position, string word)> GetPositionedWordsAsyncEnumerable()
         {
-            fileIO.StreamPosition = WordsStartStreamPosition;
+            fileIO.StreamPosition = wordsStartStreamPosition;
             while (fileIO.StreamPosition < fileIO.StreamLength)
             {
                 var position = fileIO.StreamPosition;

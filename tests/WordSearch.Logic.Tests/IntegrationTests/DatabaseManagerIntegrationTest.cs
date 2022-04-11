@@ -19,6 +19,11 @@ namespace WordSearch.Logic.Tests.IntegrationTests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            if (Directory.Exists(DatabaseDirectoryPath))
+            {
+                Directory.Delete(DatabaseDirectoryPath, true);
+            }
+
             serviceProvider = IntegrationTestHelper.GetServiceProvider(
                 x => x.AddWordSearchDatabase(
                     config => config.DatabaseDirectoryPath = DatabaseDirectoryPath));
@@ -74,6 +79,16 @@ namespace WordSearch.Logic.Tests.IntegrationTests
 
             var exists = await databaseManager.ExistsAsync(DatabaseName);
             exists.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task GetAsync_ReturnsDatabase()
+        {
+            await databaseManager.CreateAsync(DatabaseName, DatabaseChars);
+
+            var database = await databaseManager.GetAsync(DatabaseName);
+
+            database.Should().NotBeNull();
         }
 
         [Test]

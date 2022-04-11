@@ -97,7 +97,7 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [Test]
-        public async Task CreateAsync_InitWordsFile()
+        public async Task CreateAsync_WritesWordsFile()
         {
             SetDbExists(false);
             var (_, _, wordsFileWriterMock) = MockFileIO(WordsFilePath);
@@ -106,6 +106,18 @@ namespace WordSearch.Logic.Tests.Primary
             await databaseManager.CreateAsync(DatabaseName, Chars);
 
             wordsFileWriterMock.Setup(x => x.WriteAsync(It.IsAny<string>()));
+        }
+
+        [Test]
+        public async Task CreateAsync_FlushesWordsFile()
+        {
+            SetDbExists(false);
+            var (_, _, wordsFileWriterMock) = MockFileIO(WordsFilePath);
+            MockFileIO(CharsFilePath);
+
+            await databaseManager.CreateAsync(DatabaseName, Chars);
+
+            wordsFileWriterMock.Setup(x => x.FlushAsync());
         }
 
         [Test]

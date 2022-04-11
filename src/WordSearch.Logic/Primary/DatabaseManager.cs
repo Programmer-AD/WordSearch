@@ -36,6 +36,7 @@ namespace WordSearch.Logic.Primary
             fileManager.Create(wordsFilePath);
             var wordsFile = fileIOFactory.MakeFileIO(wordsFilePath);
             await wordsFile.Writer.WriteAsync(chars);
+            await wordsFile.Writer.FlushAsync();
 
             var charsFilePath = GetCharsFilePath(dbName);
             fileManager.Create(charsFilePath);
