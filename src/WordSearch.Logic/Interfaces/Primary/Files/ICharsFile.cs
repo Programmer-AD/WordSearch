@@ -2,10 +2,10 @@
 
 namespace WordSearch.Logic.Interfaces.Primary.Files
 {
-    public interface ICharsFile : IAsyncEnumerable<CharsRecord>
+    public interface ICharsFile : IEnumerable<CharsRecord>
     {
-        public Task AddAsync(Action<CharsRecord> setupRecord);
-        public Task DeleteAsync(long recordPosition);
-        public Task<long> GetRecordPositionByWordPosition(long wordPosition);
+        public void Add(Action<CharsRecord> setupRecord);
+        public void Delete(long recordPosition);
+        public long GetRecordPositionByWordPosition(long wordPosition);
     }
 }

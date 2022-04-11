@@ -25,9 +25,9 @@ namespace WordSearch.Logic.Primary
         {
             CheckWord(word);
 
-            var wordPosition = await wordsFile.AddAsync(word);
+            var wordPosition = await wordsFile.Add(word);
             var charCounts = wordEncoder.GetCharCounts(word);
-            await charsFile.AddAsync(record =>
+            await charsFile.Add(record =>
             {
                 record.WordPosition = wordPosition;
                 record.CharCounts = charCounts;
@@ -38,12 +38,12 @@ namespace WordSearch.Logic.Primary
         {
             CheckWord(word);
 
-            var wordPosition = await wordsFile.GetWordPositionAsync(word);
+            var wordPosition = await wordsFile.GetWordPosition(word);
             var recordPosition = await charsFile.GetRecordPositionByWordPosition(wordPosition);
 
             await Task.WhenAll(
-                wordsFile.DeleteAsync(wordPosition),
-                charsFile.DeleteAsync(recordPosition));
+                wordsFile.Delete(wordPosition),
+                charsFile.Delete(recordPosition));
         }
 
         public async Task<IEnumerable<string>> GetWords(string word, byte maxDifference)

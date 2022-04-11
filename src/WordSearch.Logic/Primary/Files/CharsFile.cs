@@ -20,7 +20,7 @@ namespace WordSearch.Logic.Primary.Files
             record = new CharsRecord(buffer);
         }
 
-        public async Task AddAsync(Action<CharsRecord> setupRecord)
+        public async Task Add(Action<CharsRecord> setupRecord)
         {
             setupRecord(record);
 
@@ -52,7 +52,7 @@ namespace WordSearch.Logic.Primary.Files
             throw new CharsRecordNotFoundException($"Not found record with WordPosition ({wordPosition})");
         }
 
-        public async Task DeleteAsync(long recordPosition)
+        public async Task Delete(long recordPosition)
         {
             var lastRecordPosition = fileIO.StreamLength - buffer.Length;
             if (recordPosition != lastRecordPosition)

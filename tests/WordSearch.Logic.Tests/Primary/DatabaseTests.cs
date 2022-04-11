@@ -56,7 +56,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             await database.Add(Word);
             
-            wordsFileMock.Verify(x => x.AddAsync(It.IsAny<string>()));
+            wordsFileMock.Verify(x => x.Add(It.IsAny<string>()));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             await database.Add(Word);
 
-            charsFileMock.Verify(x => x.AddAsync(It.IsAny<Action<CharsRecord>>()));
+            charsFileMock.Verify(x => x.Add(It.IsAny<Action<CharsRecord>>()));
         }
 
         [Test]
@@ -97,7 +97,7 @@ namespace WordSearch.Logic.Tests.Primary
         public async Task DeleteAsync_CallWordsFileDeleteAsyncWithCorrectParametr()
         {
             long wordPosition = 20;
-            wordsFileMock.Setup(x => x.GetWordPositionAsync(It.IsAny<string>()))
+            wordsFileMock.Setup(x => x.GetWordPosition(It.IsAny<string>()))
                 .ReturnsAsync(wordPosition);
             long recordPosition = 100;
             charsFileMock.Setup(x => x.GetRecordPositionByWordPosition(It.IsAny<long>()))
@@ -105,14 +105,14 @@ namespace WordSearch.Logic.Tests.Primary
 
             await database.Delete(Word);
 
-            wordsFileMock.Verify(x => x.DeleteAsync(wordPosition));
+            wordsFileMock.Verify(x => x.Delete(wordPosition));
         }
 
         [Test]
         public async Task DeleteAsync_CallCharsFileDeleteAsyncWithCorrectParam()
         {
             long wordPosition = 20;
-            wordsFileMock.Setup(x => x.GetWordPositionAsync(It.IsAny<string>()))
+            wordsFileMock.Setup(x => x.GetWordPosition(It.IsAny<string>()))
                 .ReturnsAsync(wordPosition);
             long recordPosition = 100;
             charsFileMock.Setup(x => x.GetRecordPositionByWordPosition(It.IsAny<long>()))
@@ -120,7 +120,7 @@ namespace WordSearch.Logic.Tests.Primary
 
             await database.Delete(Word);
 
-            charsFileMock.Verify(x => x.DeleteAsync(recordPosition));
+            charsFileMock.Verify(x => x.Delete(recordPosition));
         }
 
         [Test]

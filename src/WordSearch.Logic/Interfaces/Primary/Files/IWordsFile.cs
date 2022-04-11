@@ -1,12 +1,12 @@
 ﻿namespace WordSearch.Logic.Interfaces.Primary.Files
 {
-    public interface IWordsFile : IAsyncEnumerable<string>
+    public interface IWordsFile : IEnumerable<string>
     {
         public string Chars { get; }
 
-        public Task<long> AddAsync(string word);
-        public Task DeleteAsync(long position);
-        public Task<long> GetWordPositionAsync(string word);
-        public Task<string> GetWordAsync(long position);
+        public long Add(string word);
+        public void Delete(long position);
+        public long GetWordPosition(string word);
+        public string GetWord(long position);
     }
 }

@@ -20,7 +20,7 @@ namespace WordSearch.Logic.Primary.Files
         public string Chars => charsLazy.Value;
         private long wordsStartStreamPosition;
 
-        public async Task<long> AddAsync(string word)
+        public async Task<long> Add(string word)
         {
             await CheckWordAlreadyExistsAsync(word);
 
@@ -30,9 +30,9 @@ namespace WordSearch.Logic.Primary.Files
             return wordPosition;
         }
 
-        public async Task DeleteAsync(long position)
+        public async Task Delete(long position)
         {
-            var word = await GetWordAsync(position);
+            var word = await GetWord(position);
             var substitute = new string('\0', word.Length);
 
             fileIO.StreamPosition = position;
@@ -49,14 +49,14 @@ namespace WordSearch.Logic.Primary.Files
             }
         }
 
-        public async Task<string> GetWordAsync(long position)
+        public async Task<string> GetWord(long position)
         {
             fileIO.StreamPosition = position;
             var result = await fileIO.Reader.GetString();
             return result;
         }
 
-        public async Task<long> GetWordPositionAsync(string word)
+        public async Task<long> GetWordPosition(string word)
         {
             var enumerator = GetPositionedWordsAsyncEnumerable();
             await foreach (var (position, currentWord) in enumerator)
@@ -83,7 +83,7 @@ namespace WordSearch.Logic.Primary.Files
         {
             try
             {
-                await GetWordPositionAsync(word);
+                await GetWordPosition(word);
                 throw new WordAlreadyExistsException(word);
             }
             catch (WordNotFoundException) { }
