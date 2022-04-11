@@ -40,187 +40,187 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [TestCaseSource(nameof(wrongDbNames))]
-        public async Task CreateAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        public void Create_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.Create(dbName, Chars))
-                .Should().ThrowAsync<DatabaseWrongNameException>();
+            databaseManager.Invoking(x => x.Create(dbName, Chars))
+               .Should().Throw<DatabaseWrongNameException>();
         }
 
         [Test]
-        public async Task CreateAsync_WhenCharsIsNull_ThrowArgumentException()
+        public void Create_WhenCharsIsNull_ThrowArgumentException()
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.Create(DatabaseName, null))
-                .Should().ThrowAsync<ArgumentException>();
+            databaseManager.Invoking(x => x.Create(DatabaseName, null))
+               .Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public async Task CreateAsync_WhenCharsIsEmpty_ThrowArgumentException()
+        public void Create_WhenCharsIsEmpty_ThrowArgumentException()
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.Create(DatabaseName, string.Empty))
-                .Should().ThrowAsync<ArgumentException>();
+            databaseManager.Invoking(x => x.Create(DatabaseName, string.Empty))
+               .Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public async Task CreateAsync_WhenCharsContainsSameCharTwice_ThrowArgumentException()
+        public void Create_WhenCharsContainsSameCharTwice_ThrowArgumentException()
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.Create(DatabaseName, "1213"))
-                .Should().ThrowAsync<ArgumentException>();
+            databaseManager.Invoking(x => x.Create(DatabaseName, "1213"))
+               .Should().Throw<ArgumentException>();
         }
 
         [Test]
-        public async Task CreateAsync_WhenDatabaseExists_ThrowDatabaseAlreadyExistsException()
+        public void Create_WhenDatabaseExists_ThrowDatabaseAlreadyExistsException()
         {
             SetDbExists(true);
 
-            await databaseManager.Invoking(x => x.Create(DatabaseName, Chars))
-                .Should().ThrowAsync<DatabaseAlreadyExistsException>();
+            databaseManager.Invoking(x => x.Create(DatabaseName, Chars))
+               .Should().Throw<DatabaseAlreadyExistsException>();
         }
 
         [Test]
-        public async Task CreateAsync_CreateWordsFile()
+        public void Create_CreateWordsFile()
         {
             SetDbExists(false);
             MockFileIO(WordsFilePath);
             MockFileIO(CharsFilePath);
 
-            await databaseManager.Create(DatabaseName, Chars);
+            databaseManager.Create(DatabaseName, Chars);
 
             fileManagerMock.Verify(x => x.Create(CharsFilePath), Times.Once());
         }
 
         [Test]
-        public async Task CreateAsync_WritesWordsFile()
+        public void Create_WritesWordsFile()
         {
             SetDbExists(false);
             var (_, _, wordsFileWriterMock) = MockFileIO(WordsFilePath);
             MockFileIO(CharsFilePath);
 
-            await databaseManager.Create(DatabaseName, Chars);
+            databaseManager.Create(DatabaseName, Chars);
 
             wordsFileWriterMock.Setup(x => x.Write(It.IsAny<string>()));
         }
 
         [Test]
-        public async Task CreateAsync_FlushesWordsFile()
+        public void Create_FlushesWordsFile()
         {
             SetDbExists(false);
             var (_, _, wordsFileWriterMock) = MockFileIO(WordsFilePath);
             MockFileIO(CharsFilePath);
 
-            await databaseManager.Create(DatabaseName, Chars);
+            databaseManager.Create(DatabaseName, Chars);
 
             wordsFileWriterMock.Setup(x => x.Flush());
         }
 
         [Test]
-        public async Task CreateAsync_CreateCharsFile()
+        public void Create_CreateCharsFile()
         {
             SetDbExists(false);
             MockFileIO(WordsFilePath);
             MockFileIO(CharsFilePath);
 
-            await databaseManager.Create(DatabaseName, Chars);
+            databaseManager.Create(DatabaseName, Chars);
 
             fileManagerMock.Verify(x => x.Create(CharsFilePath), Times.Once());
         }
 
         [TestCaseSource(nameof(wrongDbNames))]
-        public async Task DeleteAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        public void Delete_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
         {
             SetDbExists(true);
 
-            await databaseManager.Invoking(x => x.Delete(dbName))
-                .Should().ThrowAsync<DatabaseWrongNameException>();
+            databaseManager.Invoking(x => x.Delete(dbName))
+               .Should().Throw<DatabaseWrongNameException>();
         }
 
         [Test]
-        public async Task DeleteAsync_WhenDatabaseNotExists_ThrowDatabaseNotFoundException()
+        public void Delete_WhenDatabaseNotExists_ThrowDatabaseNotFoundException()
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.Delete(DatabaseName))
-                .Should().ThrowAsync<DatabaseNotFoundException>();
+            databaseManager.Invoking(x => x.Delete(DatabaseName))
+               .Should().Throw<DatabaseNotFoundException>();
         }
 
         [Test]
-        public async Task DeleteAsync_WhenCharsFileNotExists_DeletesOnlyWordsFile()
+        public void Delete_WhenCharsFileNotExists_DeletesOnlyWordsFile()
         {
             SetDbExists(true);
 
             fileManagerMock.Setup(x => x.Exists(WordsFilePath)).Returns(true);
             fileManagerMock.Setup(x => x.Exists(CharsFilePath)).Returns(false);
 
-            await databaseManager.Delete(DatabaseName);
+            databaseManager.Delete(DatabaseName);
 
             fileManagerMock.Verify(x => x.Delete(WordsFilePath), Times.Once());
             fileManagerMock.Verify(x => x.Delete(CharsFilePath), Times.Never());
         }
 
         [Test]
-        public async Task DeleteAsync_DeletesBothFiles()
+        public void Delete_DeletesBothFiles()
         {
             SetDbExists(true);
 
-            await databaseManager.Delete(DatabaseName);
+            databaseManager.Delete(DatabaseName);
 
             fileManagerMock.Verify(x => x.Delete(WordsFilePath), Times.Once());
             fileManagerMock.Verify(x => x.Delete(CharsFilePath), Times.Once());
         }
 
         [TestCaseSource(nameof(wrongDbNames))]
-        public async Task GetAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        public void Get_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
         {
             SetDbExists(true);
 
-            await databaseManager.Invoking(x => x.Get(dbName))
-                .Should().ThrowAsync<DatabaseWrongNameException>();
+            databaseManager.Invoking(x => x.Get(dbName))
+               .Should().Throw<DatabaseWrongNameException>();
         }
 
         [Test]
-        public async Task GetAsync_WhenDatabaseNotExists_ThrowDatabaseNotFoundException()
+        public void Get_WhenDatabaseNotExists_ThrowDatabaseNotFoundException()
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.Get(DatabaseName))
-                .Should().ThrowAsync<DatabaseNotFoundException>();
+            databaseManager.Invoking(x => x.Get(DatabaseName))
+               .Should().Throw<DatabaseNotFoundException>();
         }
 
         [Test]
-        public async Task GetAsync_CallsDatabaseFactory()
+        public void Get_CallsDatabaseFactory()
         {
             SetDbExists(true);
 
-            await databaseManager.Get(DatabaseName);
+            databaseManager.Get(DatabaseName);
 
             databaseFactoryMock.Verify(x => x.MakeDatabase(It.IsAny<string>(),
                 It.IsAny<IFileIO>(), It.IsAny<IFileIO>()));
         }
 
         [TestCaseSource(nameof(wrongDbNames))]
-        public async Task ExistsAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        public void Exists_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
         {
-            await databaseManager.Invoking(x => x.Exists(dbName))
-                .Should().ThrowAsync<DatabaseWrongNameException>();
+            databaseManager.Invoking(x => x.Exists(dbName))
+               .Should().Throw<DatabaseWrongNameException>();
         }
 
         [Test]
-        public async Task ExistsAsync_CallsFileManagerExistsMethod()
+        public void Exists_CallsFileManagerExistsMethod()
         {
-            await databaseManager.Exists(DatabaseName);
+            databaseManager.Exists(DatabaseName);
 
             fileManagerMock.Verify(x => x.Exists(It.IsAny<string>()));
         }
 
         [Test]
-        public async Task GetDbNamesAsync_ReturnsWordFileNamesWithoutExtension()
+        public void GetDbNames_ReturnsWordFileNamesWithoutExtension()
         {
             var fileFormat = DatabaseConstants.DatabaseWordFileExtension;
             var expected = new[] { "test", "tes_t2", "correct" };
@@ -230,7 +230,7 @@ namespace WordSearch.Logic.Tests.Primary
             };
             fileManagerMock.Setup(x => x.GetDirectoryFiles(It.IsAny<string>())).Returns(fileNames);
 
-            var result = await databaseManager.GetDbNames();
+            var result = databaseManager.GetDbNames();
 
             result.Should().Equal(expected);
         }

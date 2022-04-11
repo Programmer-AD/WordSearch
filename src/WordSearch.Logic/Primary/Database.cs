@@ -53,7 +53,7 @@ namespace WordSearch.Logic.Primary
             var result = charsFile.Where(charsRecord =>
             {
                 var difference = DatabaseHelpers.GetDifference(charCounts, charsRecord.CharCounts.Span);
-                return difference > maxDifference;
+                return difference <= maxDifference;
             }).Select(x => wordsFile.GetWord(x.WordPosition))
             .ToList();
 

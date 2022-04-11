@@ -51,102 +51,102 @@ namespace WordSearch.Logic.Tests.IntegrationTests
         }
 
         [Test]
-        public async Task CreateAsync_MakeFiles()
+        public void Create_MakeFiles()
         {
-            await databaseManager.Create(DatabaseName, DatabaseChars);
+            databaseManager.Create(DatabaseName, DatabaseChars);
 
             Directory.GetFiles(DatabaseDirectoryPath)
                 .Should().NotBeNullOrEmpty();
         }
 
         [Test]
-        public async Task DeleteAsync_DeleteFiles()
+        public void Delete_DeleteFiles()
         {
-            await databaseManager.Create(DatabaseName, DatabaseChars);
+            databaseManager.Create(DatabaseName, DatabaseChars);
 
-            await databaseManager.Delete(DatabaseName);
+            databaseManager.Delete(DatabaseName);
 
             Directory.GetFiles(DatabaseDirectoryPath)
                 .Should().BeEmpty();
         }
 
         [Test]
-        public async Task DeleteAsync_MakeDbNotExists()
+        public void Delete_MakeDbNotExists()
         {
-            await databaseManager.Create(DatabaseName, DatabaseChars);
+            databaseManager.Create(DatabaseName, DatabaseChars);
 
-            await databaseManager.Delete(DatabaseName);
+            databaseManager.Delete(DatabaseName);
 
-            var exists = await databaseManager.Exists(DatabaseName);
+            var exists = databaseManager.Exists(DatabaseName);
             exists.Should().BeFalse();
         }
 
         [Test]
-        public async Task GetAsync_ReturnsDatabase()
+        public void Get_ReturnsDatabase()
         {
-            await databaseManager.Create(DatabaseName, DatabaseChars);
+            databaseManager.Create(DatabaseName, DatabaseChars);
 
-            var database = await databaseManager.Get(DatabaseName);
+            var database = databaseManager.Get(DatabaseName);
 
             database.Should().NotBeNull();
         }
 
         [Test]
-        public async Task ExistsAsync_WhenDbExists_ReturnsTrue()
+        public void Exists_WhenDbExists_ReturnsTrue()
         {
-            await databaseManager.Create(DatabaseName, DatabaseChars);
+            databaseManager.Create(DatabaseName, DatabaseChars);
 
-            var result = await databaseManager.Exists(DatabaseName);
+            var result = databaseManager.Exists(DatabaseName);
 
             result.Should().BeTrue();
         }
 
         [Test]
-        public async Task ExistsAsync_WhenDbsNotExists_ReturnsFalse()
+        public void Exists_WhenDbsNotExists_ReturnsFalse()
         {
-            var result = await databaseManager.Exists(DatabaseName);
+            var result = databaseManager.Exists(DatabaseName);
 
             result.Should().BeFalse();
         }
 
         [Test]
-        public async Task ExistsAsync_WhenRequestedDbNotExists_ReturnsFalse()
+        public void Exists_WhenRequestedDbNotExists_ReturnsFalse()
         {
-            await databaseManager.Create(OtherDatabaseName, DatabaseChars);
+            databaseManager.Create(OtherDatabaseName, DatabaseChars);
 
-            var result = await databaseManager.Exists(DatabaseName);
+            var result = databaseManager.Exists(DatabaseName);
 
             result.Should().BeFalse();
         }
 
         [Test]
-        public async Task GetDbNamesAsync_WhenNoDbs_ReturnsEmptyResult()
+        public void GetDbNames_WhenNoDbs_ReturnsEmptyResult()
         {
-            var result = await databaseManager.GetDbNames();
+            var result = databaseManager.GetDbNames();
 
             result.Should().BeEmpty();
         }
 
         [Test]
-        public async Task GetDbNamesAsync_FiltersOtherFiles()
+        public void GetDbNames_FiltersOtherFiles()
         {
             var expected = new[] { DatabaseName };
-            await databaseManager.Create(DatabaseName, DatabaseChars);
+            databaseManager.Create(DatabaseName, DatabaseChars);
             File.Create(Path.Combine(DatabaseDirectoryPath, "shit.txt")).Dispose();
 
-            var result = await databaseManager.GetDbNames();
+            var result = databaseManager.GetDbNames();
 
             result.Should().BeEquivalentTo(expected);
         }
 
         [Test]
-        public async Task GetDbNamesAsync_ReturnsDbNames()
+        public void GetDbNames_ReturnsDbNames()
         {
             var expected = new[] { DatabaseName, OtherDatabaseName };
-            await databaseManager.Create(DatabaseName, DatabaseChars);
-            await databaseManager.Create(OtherDatabaseName, DatabaseChars);
+            databaseManager.Create(DatabaseName, DatabaseChars);
+            databaseManager.Create(OtherDatabaseName, DatabaseChars);
 
-            var result = await databaseManager.GetDbNames();
+            var result = databaseManager.GetDbNames();
 
             result.Should().BeEquivalentTo(expected);
         }
