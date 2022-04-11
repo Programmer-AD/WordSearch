@@ -25,8 +25,8 @@ namespace WordSearch.Logic.Primary.Files
             await CheckWordAlreadyExistsAsync(word);
 
             var wordPosition = fileIO.StreamPosition = fileIO.StreamLength;
-            await fileIO.Writer.WriteAsync(word);
-            await fileIO.Writer.FlushAsync();
+            await fileIO.Writer.Write(word);
+            await fileIO.Writer.Flush();
             return wordPosition;
         }
 
@@ -36,8 +36,8 @@ namespace WordSearch.Logic.Primary.Files
             var substitute = new string('\0', word.Length);
 
             fileIO.StreamPosition = position;
-            await fileIO.Writer.WriteAsync(substitute);
-            await fileIO.Writer.FlushAsync();
+            await fileIO.Writer.Write(substitute);
+            await fileIO.Writer.Flush();
         }
 
         public async IAsyncEnumerator<string> GetAsyncEnumerator(CancellationToken cancellationToken = default)
@@ -52,7 +52,7 @@ namespace WordSearch.Logic.Primary.Files
         public async Task<string> GetWordAsync(long position)
         {
             fileIO.StreamPosition = position;
-            var result = await fileIO.Reader.GetStringAsync();
+            var result = await fileIO.Reader.GetString();
             return result;
         }
 
@@ -73,7 +73,7 @@ namespace WordSearch.Logic.Primary.Files
         private string ReadChars()
         {
             fileIO.StreamPosition = 0;
-            var readingTask = fileIO.Reader.GetStringAsync();
+            var readingTask = fileIO.Reader.GetString();
             var chars = readingTask.Result;
             wordsStartStreamPosition = fileIO.StreamPosition;
             return chars;
@@ -96,7 +96,7 @@ namespace WordSearch.Logic.Primary.Files
             long position;
             while ((position = fileIO.StreamPosition) < length)
             {
-                var word = await fileIO.Reader.GetStringAsync();
+                var word = await fileIO.Reader.GetString();
                 yield return (position, word);
             }
         }

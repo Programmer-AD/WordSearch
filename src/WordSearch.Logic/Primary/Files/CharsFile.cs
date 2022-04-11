@@ -25,8 +25,8 @@ namespace WordSearch.Logic.Primary.Files
             setupRecord(record);
 
             fileIO.StreamPosition = fileIO.StreamLength;
-            await fileIO.Writer.WriteAsync(buffer);
-            await fileIO.Writer.FlushAsync();
+            await fileIO.Writer.Write(buffer);
+            await fileIO.Writer.Flush();
         }
 
         public async IAsyncEnumerator<CharsRecord> GetAsyncEnumerator(CancellationToken cancellationToken = default)
@@ -58,11 +58,11 @@ namespace WordSearch.Logic.Primary.Files
             if (recordPosition != lastRecordPosition)
             {
                 fileIO.StreamPosition = lastRecordPosition;
-                await fileIO.Reader.GetBytesAsync(buffer);
+                await fileIO.Reader.GetBytes(buffer);
 
                 fileIO.StreamPosition = recordPosition;
-                await fileIO.Writer.WriteAsync(buffer);
-                await fileIO.Writer.FlushAsync();
+                await fileIO.Writer.Write(buffer);
+                await fileIO.Writer.Flush();
             }
             fileIO.StreamLength -= buffer.Length;
         }
@@ -74,7 +74,7 @@ namespace WordSearch.Logic.Primary.Files
             long position; 
             while ((position = fileIO.StreamPosition) < length)
             {
-                await fileIO.Reader.GetBytesAsync(buffer);
+                await fileIO.Reader.GetBytes(buffer);
                 yield return (position, record);
             }
         }

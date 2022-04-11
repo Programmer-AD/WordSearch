@@ -21,7 +21,7 @@ namespace WordSearch.Logic.Primary
             this.wordEncoder = wordEncoder;
         }
 
-        public async Task AddAsync(string word)
+        public async Task Add(string word)
         {
             CheckWord(word);
 
@@ -34,7 +34,7 @@ namespace WordSearch.Logic.Primary
             });
         }
 
-        public async Task DeleteAsync(string word)
+        public async Task Delete(string word)
         {
             CheckWord(word);
 
@@ -46,7 +46,7 @@ namespace WordSearch.Logic.Primary
                 charsFile.DeleteAsync(recordPosition));
         }
 
-        public async Task<IEnumerable<string>> GetWordsAsync(string word, byte maxDifference)
+        public async Task<IEnumerable<string>> GetWords(string word, byte maxDifference)
         {
             CheckWord(word);
 

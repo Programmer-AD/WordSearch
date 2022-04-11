@@ -5,8 +5,8 @@
         string Name { get; }
         string Chars { get; }
 
-        Task AddAsync(string word);
-        Task<IEnumerable<string>> GetWordsAsync(string word, byte maxDifference);
-        Task DeleteAsync(string word);
+        void Add(string word);
+        IEnumerable<string> GetWords(string word, byte maxDifference);
+        void Delete(string word);
     }
 }

@@ -21,15 +21,15 @@ namespace WordSearch.Benchmark
             var database = await GetDatabase();
 
             await BenchmarkMultiTimes(
-                async i => await database.AddAsync(i.ToString()),
+                async i => await database.Add(i.ToString()),
                 (count, time) => Console.WriteLine($"AddAsync\t{count}\t{time}"));
 
             await BenchmarkMultiTimes(
-                async i => await database.GetWordsAsync(i.ToString(), 1),
+                async i => await database.GetWords(i.ToString(), 1),
                 (count, time) => Console.WriteLine($"GetWordsAsync\t{count}\t{time}"));
 
             await BenchmarkMultiTimes(
-                async i => await database.DeleteAsync((MaxOperationCount - 1 - i).ToString()),
+                async i => await database.Delete((MaxOperationCount - 1 - i).ToString()),
                 (count, time) => Console.WriteLine($"DeleteAsync\t{count}\t{time}"));
 
             Console.WriteLine("Benchmark finish");
@@ -50,8 +50,8 @@ namespace WordSearch.Benchmark
             var provider = GetServiceProvider();
             var dbManager = provider.GetRequiredService<IDatabaseManager>();
 
-            await dbManager.CreateAsync(DbName, Chars);
-            var database = await dbManager.GetAsync(DbName);
+            await dbManager.Create(DbName, Chars);
+            var database = await dbManager.Get(DbName);
             return database;
         }
 

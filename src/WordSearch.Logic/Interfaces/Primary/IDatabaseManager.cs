@@ -2,10 +2,10 @@
 {
     public interface IDatabaseManager
     {
-        Task CreateAsync(string dbName, string chars);
-        Task<IDatabase> GetAsync(string dbName);
-        Task DeleteAsync(string dbName);
-        Task<bool> ExistsAsync(string dbName);
-        Task<IEnumerable<string>> GetDbNamesAsync();
+        void Create(string dbName, string chars);
+        IDatabase Get(string dbName);
+        void Delete(string dbName);
+        bool Exists(string dbName);
+        IEnumerable<string> GetDbNames();
     }
 }

@@ -38,7 +38,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             string word = null;
 
-            await database.Invoking(x => x.AddAsync(word))
+            await database.Invoking(x => x.Add(word))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
@@ -47,14 +47,14 @@ namespace WordSearch.Logic.Tests.Primary
         {
             var word = string.Empty;
 
-            await database.Invoking(x => x.AddAsync(word))
+            await database.Invoking(x => x.Add(word))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
         [Test]
         public async Task AddAsync_CallWordsFileAddAsync()
         {
-            await database.AddAsync(Word);
+            await database.Add(Word);
             
             wordsFileMock.Verify(x => x.AddAsync(It.IsAny<string>()));
         }
@@ -62,7 +62,7 @@ namespace WordSearch.Logic.Tests.Primary
         [Test]
         public async Task AddAsync_CallsWordEncoderGetCharCounts()
         {
-            await database.AddAsync(Word);
+            await database.Add(Word);
 
             wordEncoderMock.Verify(x => x.GetCharCounts(It.IsAny<string>()));
         }
@@ -70,7 +70,7 @@ namespace WordSearch.Logic.Tests.Primary
         [Test]
         public async Task AddAsync_CallCharsFileAddAsync()
         {
-            await database.AddAsync(Word);
+            await database.Add(Word);
 
             charsFileMock.Verify(x => x.AddAsync(It.IsAny<Action<CharsRecord>>()));
         }
@@ -80,7 +80,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             string word = null;
 
-            await database.Invoking(x => x.DeleteAsync(word))
+            await database.Invoking(x => x.Delete(word))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
@@ -89,7 +89,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             var word = string.Empty;
 
-            await database.Invoking(x => x.DeleteAsync(word))
+            await database.Invoking(x => x.Delete(word))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
@@ -103,7 +103,7 @@ namespace WordSearch.Logic.Tests.Primary
             charsFileMock.Setup(x => x.GetRecordPositionByWordPosition(It.IsAny<long>()))
                 .ReturnsAsync(recordPosition);
 
-            await database.DeleteAsync(Word);
+            await database.Delete(Word);
 
             wordsFileMock.Verify(x => x.DeleteAsync(wordPosition));
         }
@@ -118,7 +118,7 @@ namespace WordSearch.Logic.Tests.Primary
             charsFileMock.Setup(x => x.GetRecordPositionByWordPosition(It.IsAny<long>()))
                 .ReturnsAsync(recordPosition);
 
-            await database.DeleteAsync(Word);
+            await database.Delete(Word);
 
             charsFileMock.Verify(x => x.DeleteAsync(recordPosition));
         }
@@ -128,7 +128,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             string word = null;
 
-            await database.Invoking(x => x.GetWordsAsync(word, MaxDifference))
+            await database.Invoking(x => x.GetWords(word, MaxDifference))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
@@ -137,7 +137,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             var word = string.Empty;
 
-            await database.Invoking(x => x.GetWordsAsync(word, MaxDifference))
+            await database.Invoking(x => x.GetWords(word, MaxDifference))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
@@ -148,7 +148,7 @@ namespace WordSearch.Logic.Tests.Primary
             charsFileMock.Setup(x => x.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
                 .Returns(asyncEnumeratorMock.Object);
 
-            await database.GetWordsAsync(Word, MaxDifference);
+            await database.GetWords(Word, MaxDifference);
 
             wordEncoderMock.Verify(x => x.GetCharCounts(It.IsAny<string>()), Times.Once());
         }

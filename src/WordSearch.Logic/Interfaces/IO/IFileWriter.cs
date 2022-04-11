@@ -2,9 +2,9 @@
 {
     public interface IFileWriter
     {
-        Task WriteAsync(string value);
-        Task WriteAsync(ReadOnlyMemory<byte> bytes);
+        void Write(string value);
+        void Write(ReadOnlyMemory<byte> bytes);
 
-        Task FlushAsync();
+        void Flush();
     }
 }

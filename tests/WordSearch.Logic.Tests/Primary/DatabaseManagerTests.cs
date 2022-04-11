@@ -44,7 +44,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.CreateAsync(dbName, Chars))
+            await databaseManager.Invoking(x => x.Create(dbName, Chars))
                 .Should().ThrowAsync<DatabaseWrongNameException>();
         }
 
@@ -53,7 +53,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, null))
+            await databaseManager.Invoking(x => x.Create(DatabaseName, null))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
@@ -62,7 +62,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, string.Empty))
+            await databaseManager.Invoking(x => x.Create(DatabaseName, string.Empty))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
@@ -71,7 +71,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, "1213"))
+            await databaseManager.Invoking(x => x.Create(DatabaseName, "1213"))
                 .Should().ThrowAsync<ArgumentException>();
         }
 
@@ -80,7 +80,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(true);
 
-            await databaseManager.Invoking(x => x.CreateAsync(DatabaseName, Chars))
+            await databaseManager.Invoking(x => x.Create(DatabaseName, Chars))
                 .Should().ThrowAsync<DatabaseAlreadyExistsException>();
         }
 
@@ -91,7 +91,7 @@ namespace WordSearch.Logic.Tests.Primary
             MockFileIO(WordsFilePath);
             MockFileIO(CharsFilePath);
 
-            await databaseManager.CreateAsync(DatabaseName, Chars);
+            await databaseManager.Create(DatabaseName, Chars);
 
             fileManagerMock.Verify(x => x.Create(CharsFilePath), Times.Once());
         }
@@ -103,9 +103,9 @@ namespace WordSearch.Logic.Tests.Primary
             var (_, _, wordsFileWriterMock) = MockFileIO(WordsFilePath);
             MockFileIO(CharsFilePath);
 
-            await databaseManager.CreateAsync(DatabaseName, Chars);
+            await databaseManager.Create(DatabaseName, Chars);
 
-            wordsFileWriterMock.Setup(x => x.WriteAsync(It.IsAny<string>()));
+            wordsFileWriterMock.Setup(x => x.Write(It.IsAny<string>()));
         }
 
         [Test]
@@ -115,9 +115,9 @@ namespace WordSearch.Logic.Tests.Primary
             var (_, _, wordsFileWriterMock) = MockFileIO(WordsFilePath);
             MockFileIO(CharsFilePath);
 
-            await databaseManager.CreateAsync(DatabaseName, Chars);
+            await databaseManager.Create(DatabaseName, Chars);
 
-            wordsFileWriterMock.Setup(x => x.FlushAsync());
+            wordsFileWriterMock.Setup(x => x.Flush());
         }
 
         [Test]
@@ -127,7 +127,7 @@ namespace WordSearch.Logic.Tests.Primary
             MockFileIO(WordsFilePath);
             MockFileIO(CharsFilePath);
 
-            await databaseManager.CreateAsync(DatabaseName, Chars);
+            await databaseManager.Create(DatabaseName, Chars);
 
             fileManagerMock.Verify(x => x.Create(CharsFilePath), Times.Once());
         }
@@ -137,7 +137,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(true);
 
-            await databaseManager.Invoking(x => x.DeleteAsync(dbName))
+            await databaseManager.Invoking(x => x.Delete(dbName))
                 .Should().ThrowAsync<DatabaseWrongNameException>();
         }
 
@@ -146,7 +146,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.DeleteAsync(DatabaseName))
+            await databaseManager.Invoking(x => x.Delete(DatabaseName))
                 .Should().ThrowAsync<DatabaseNotFoundException>();
         }
 
@@ -158,7 +158,7 @@ namespace WordSearch.Logic.Tests.Primary
             fileManagerMock.Setup(x => x.Exists(WordsFilePath)).Returns(true);
             fileManagerMock.Setup(x => x.Exists(CharsFilePath)).Returns(false);
 
-            await databaseManager.DeleteAsync(DatabaseName);
+            await databaseManager.Delete(DatabaseName);
 
             fileManagerMock.Verify(x => x.Delete(WordsFilePath), Times.Once());
             fileManagerMock.Verify(x => x.Delete(CharsFilePath), Times.Never());
@@ -169,7 +169,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(true);
 
-            await databaseManager.DeleteAsync(DatabaseName);
+            await databaseManager.Delete(DatabaseName);
 
             fileManagerMock.Verify(x => x.Delete(WordsFilePath), Times.Once());
             fileManagerMock.Verify(x => x.Delete(CharsFilePath), Times.Once());
@@ -180,7 +180,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(true);
 
-            await databaseManager.Invoking(x => x.GetAsync(dbName))
+            await databaseManager.Invoking(x => x.Get(dbName))
                 .Should().ThrowAsync<DatabaseWrongNameException>();
         }
 
@@ -189,7 +189,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(false);
 
-            await databaseManager.Invoking(x => x.GetAsync(DatabaseName))
+            await databaseManager.Invoking(x => x.Get(DatabaseName))
                 .Should().ThrowAsync<DatabaseNotFoundException>();
         }
 
@@ -198,7 +198,7 @@ namespace WordSearch.Logic.Tests.Primary
         {
             SetDbExists(true);
 
-            await databaseManager.GetAsync(DatabaseName);
+            await databaseManager.Get(DatabaseName);
 
             databaseFactoryMock.Verify(x => x.MakeDatabase(It.IsAny<string>(),
                 It.IsAny<IFileIO>(), It.IsAny<IFileIO>()));
@@ -207,14 +207,14 @@ namespace WordSearch.Logic.Tests.Primary
         [TestCaseSource(nameof(wrongDbNames))]
         public async Task ExistsAsync_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
         {
-            await databaseManager.Invoking(x => x.ExistsAsync(dbName))
+            await databaseManager.Invoking(x => x.Exists(dbName))
                 .Should().ThrowAsync<DatabaseWrongNameException>();
         }
 
         [Test]
         public async Task ExistsAsync_CallsFileManagerExistsMethod()
         {
-            await databaseManager.ExistsAsync(DatabaseName);
+            await databaseManager.Exists(DatabaseName);
 
             fileManagerMock.Verify(x => x.Exists(It.IsAny<string>()));
         }
@@ -230,7 +230,7 @@ namespace WordSearch.Logic.Tests.Primary
             };
             fileManagerMock.Setup(x => x.GetDirectoryFiles(It.IsAny<string>())).Returns(fileNames);
 
-            var result = await databaseManager.GetDbNamesAsync();
+            var result = await databaseManager.GetDbNames();
 
             result.Should().Equal(expected);
         }

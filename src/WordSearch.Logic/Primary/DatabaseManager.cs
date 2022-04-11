@@ -26,7 +26,7 @@ namespace WordSearch.Logic.Primary
             EnsureDirectoryCreated();
         }
 
-        public async Task CreateAsync(string dbName, string chars)
+        public async Task Create(string dbName, string chars)
         {
             CheckChars(chars);
 
@@ -35,14 +35,14 @@ namespace WordSearch.Logic.Primary
             var wordsFilePath = GetWordsFilePath(dbName);
             fileManager.Create(wordsFilePath);
             var wordsFile = fileIOFactory.MakeFileIO(wordsFilePath);
-            await wordsFile.Writer.WriteAsync(chars);
-            await wordsFile.Writer.FlushAsync();
+            await wordsFile.Writer.Write(chars);
+            await wordsFile.Writer.Flush();
 
             var charsFilePath = GetCharsFilePath(dbName);
             fileManager.Create(charsFilePath);
         }
 
-        public async Task DeleteAsync(string dbName)
+        public async Task Delete(string dbName)
         {
             await CheckDbExistence(dbName, shouldExist: true);
 
@@ -56,7 +56,7 @@ namespace WordSearch.Logic.Primary
             fileManager.Delete(wordsFilePath);
         }
 
-        public async Task<IDatabase> GetAsync(string dbName)
+        public async Task<IDatabase> Get(string dbName)
         {
             await CheckDbExistence(dbName, shouldExist: true);
 
@@ -70,7 +70,7 @@ namespace WordSearch.Logic.Primary
             return database;
         }
 
-        public async Task<bool> ExistsAsync(string dbName)
+        public async Task<bool> Exists(string dbName)
         {
             CheckDbName(dbName);
             var wordsFilePath = GetWordsFilePath(dbName);
@@ -78,7 +78,7 @@ namespace WordSearch.Logic.Primary
             return await Task.FromResult(result);
         }
 
-        public async Task<IEnumerable<string>> GetDbNamesAsync()
+        public async Task<IEnumerable<string>> GetDbNames()
         {
             var fileFormat = DatabaseConstants.DatabaseWordFileExtension;
             var dbNames = fileManager.GetDirectoryFiles(config.DatabaseDirectoryPath)
@@ -146,7 +146,7 @@ namespace WordSearch.Logic.Primary
 
         private async Task CheckDbExistence(string dbName, bool shouldExist)
         {
-            var dbExists = await ExistsAsync(dbName);
+            var dbExists = await Exists(dbName);
             if (dbExists != shouldExist)
             {
                 throw shouldExist ?

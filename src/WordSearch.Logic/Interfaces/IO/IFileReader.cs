@@ -2,7 +2,7 @@
 {
     public interface IFileReader
     {
-        Task<string> GetStringAsync();
-        Task<int> GetBytesAsync(Memory<byte> bytes);
+        string GetString();
+        int GetBytes(Memory<byte> bytes);
     }
 }

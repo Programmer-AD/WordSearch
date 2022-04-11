@@ -46,8 +46,8 @@ namespace WordSearch.Logic.Tests.IntegrationTests
             var scopeProvider = serviceScope.ServiceProvider;
             databaseManager = scopeProvider.GetRequiredService<IDatabaseManager>();
 
-            await databaseManager.CreateAsync(DatabaseName, DatabaseChars);
-            database = await databaseManager.GetAsync(DatabaseName);
+            await databaseManager.Create(DatabaseName, DatabaseChars);
+            database = await databaseManager.Get(DatabaseName);
         }
 
         [TearDown]
@@ -60,32 +60,32 @@ namespace WordSearch.Logic.Tests.IntegrationTests
         [Test]
         public async Task AddAsync_DontThrowException()
         {
-            await database.Invoking(x => x.AddAsync(Word))
+            await database.Invoking(x => x.Add(Word))
                 .Should().NotThrowAsync();
         }
 
         [Test]
         public async Task AddAsync_WhenAddOtherWord_DontThrowException()
         {
-            await database.AddAsync(Word);
+            await database.Add(Word);
 
-            await database.Invoking(x => x.AddAsync(OtherWord))
+            await database.Invoking(x => x.Add(OtherWord))
                 .Should().NotThrowAsync();
         }
 
         [Test]
         public async Task AddAsync_WhenAddSameWord_ThrowWordAlreadyExistsException()
         {
-            await database.AddAsync(Word);
+            await database.Add(Word);
 
-            await database.Invoking(x => x.AddAsync(Word))
+            await database.Invoking(x => x.Add(Word))
                 .Should().ThrowAsync<WordAlreadyExistsException>();
         }
 
         [Test]
         public async Task GetWordsAsync_WhenNoWords_ReturnEmptyResult()
         {
-            var result = await database.GetWordsAsync(WordD1, 10);
+            var result = await database.GetWords(WordD1, 10);
 
             result.Should().BeEmpty();
         }
@@ -93,9 +93,9 @@ namespace WordSearch.Logic.Tests.IntegrationTests
         [Test]
         public async Task GetWordsAsync_WhenSearchedWordExists_ReturnThisWord()
         {
-            await database.AddAsync(Word);
+            await database.Add(Word);
 
-            var result = await database.GetWordsAsync(Word, 0);
+            var result = await database.GetWords(Word, 0);
 
             result.Should().Contain(Word);
         }
@@ -104,9 +104,9 @@ namespace WordSearch.Logic.Tests.IntegrationTests
         public async Task GetWordsAsync_WhenNearWordExists_ReturnNearWord()
         {
             var expected = new[] { Word };
-            await database.AddAsync(Word);
+            await database.Add(Word);
 
-            var result = await database.GetWordsAsync(WordD1, 1);
+            var result = await database.GetWords(WordD1, 1);
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -115,11 +115,11 @@ namespace WordSearch.Logic.Tests.IntegrationTests
         public async Task GetWordsAsync_ReturnAllMatchingResults()
         {
             var expected = new[] { Word, WordD1 };
-            await database.AddAsync(Word);
-            await database.AddAsync(WordD1);
-            await database.AddAsync(OtherWord);
+            await database.Add(Word);
+            await database.Add(WordD1);
+            await database.Add(OtherWord);
 
-            var result = await database.GetWordsAsync(Word, 1);
+            var result = await database.GetWords(Word, 1);
 
             result.Should().BeEquivalentTo(expected);
         }
@@ -128,22 +128,22 @@ namespace WordSearch.Logic.Tests.IntegrationTests
         public async Task DeleteAsync_DeletesWord()
         {
             var expected = new[] { WordD1 };
-            await database.AddAsync(Word);
-            await database.AddAsync(WordD1);
-            await database.AddAsync(OtherWord);
+            await database.Add(Word);
+            await database.Add(WordD1);
+            await database.Add(OtherWord);
 
-            await database.DeleteAsync(Word);
+            await database.Delete(Word);
 
-            var result = await database.GetWordsAsync(Word, 1);
+            var result = await database.GetWords(Word, 1);
             result.Should().BeEquivalentTo(expected);
         }
 
         [Test]
         public async Task DeleteAsync_WhenNoSearchedWord_ThrowWordNotFoundException()
         {
-            await database.AddAsync(OtherWord);
+            await database.Add(OtherWord);
 
-            await database.Invoking(x => x.DeleteAsync(Word))
+            await database.Invoking(x => x.Delete(Word))
                 .Should().ThrowAsync<WordNotFoundException>();
         }
     }
