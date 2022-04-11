@@ -1,4 +1,5 @@
-﻿using WordSearch.Logic.Exceptions.CharsFile;
+﻿using System.Collections;
+using WordSearch.Logic.Exceptions.CharsFile;
 using WordSearch.Logic.Interfaces.IO;
 using WordSearch.Logic.Interfaces.Primary.Files;
 
@@ -20,63 +21,70 @@ namespace WordSearch.Logic.Primary.Files
             record = new CharsRecord(buffer);
         }
 
-        public async Task Add(Action<CharsRecord> setupRecord)
+        public void Add(Action<CharsRecord> setupRecord)
         {
             setupRecord(record);
 
             fileIO.StreamPosition = fileIO.StreamLength;
-            await fileIO.Writer.Write(buffer);
-            await fileIO.Writer.Flush();
+            fileIO.Writer.Write(buffer);
+            fileIO.Writer.Flush();
         }
 
-        public async IAsyncEnumerator<CharsRecord> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        public IEnumerator<CharsRecord> GetEnumerator()
         {
-            var enumerable = GetPositionedRecordsAsyncEnumerable();
-            await foreach (var (_, record) in enumerable)
+            var result = GetPositionedRecordsEnumerable()
+                .Select(x => x.record)
+                .GetEnumerator();
+
+            return result;
+        }
+
+        public long GetRecordPositionByWordPosition(long wordPosition)
+        {
+            try
             {
-                yield return record;
+                var result = GetPositionedRecordsEnumerable()
+                    .First(x => x.record.WordPosition == wordPosition)
+                    .position;
+
+                return result;
+            }
+            catch (InvalidOperationException)
+            {
+                throw new CharsRecordNotFoundException($"Not found record with WordPosition ({wordPosition})");
             }
         }
 
-        public async Task<long> GetRecordPositionByWordPosition(long wordPosition)
-        {
-            var enumerable = GetPositionedRecordsAsyncEnumerable();
-            await foreach (var (position, record) in enumerable)
-            {
-                if (record.WordPosition == wordPosition)
-                {
-                    return position;
-                }
-            }
-
-            throw new CharsRecordNotFoundException($"Not found record with WordPosition ({wordPosition})");
-        }
-
-        public async Task Delete(long recordPosition)
+        public void Delete(long recordPosition)
         {
             var lastRecordPosition = fileIO.StreamLength - buffer.Length;
             if (recordPosition != lastRecordPosition)
             {
                 fileIO.StreamPosition = lastRecordPosition;
-                await fileIO.Reader.GetBytes(buffer);
+                fileIO.Reader.GetBytes(buffer);
 
                 fileIO.StreamPosition = recordPosition;
-                await fileIO.Writer.Write(buffer);
-                await fileIO.Writer.Flush();
+                fileIO.Writer.Write(buffer);
+                fileIO.Writer.Flush();
             }
             fileIO.StreamLength -= buffer.Length;
         }
 
-        private async IAsyncEnumerable<(long position, CharsRecord record)> GetPositionedRecordsAsyncEnumerable()
+        private IEnumerable<(long position, CharsRecord record)> GetPositionedRecordsEnumerable()
         {
             fileIO.StreamPosition = 0;
             var length = fileIO.StreamLength;
-            long position; 
+            long position;
             while ((position = fileIO.StreamPosition) < length)
             {
-                await fileIO.Reader.GetBytes(buffer);
+                fileIO.Reader.GetBytes(buffer);
                 yield return (position, record);
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
