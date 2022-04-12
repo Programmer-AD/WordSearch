@@ -14,7 +14,7 @@ namespace WordSearch.CLI
             foreach (var overloads in commandMethods)
             {
                 stringBuilder.AppendLine(overloads.Key);
-                foreach(var method in overloads)
+                foreach (var method in overloads)
                 {
                     stringBuilder.Append('\t').AppendLine(GetMethodDescription(method));
                 }
@@ -56,6 +56,10 @@ namespace WordSearch.CLI
             try
             {
                 databaseManager.Delete(dbName);
+                if (UsedDatabase.Name == dbName)
+                {
+                    UsedDatabase = null;
+                }
                 return $"Database \"{dbName}\" deleted successfully";
             }
             catch (DatabaseNotFoundException e)
