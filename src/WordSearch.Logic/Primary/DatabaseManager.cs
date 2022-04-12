@@ -18,7 +18,7 @@ namespace WordSearch.Logic.Primary
             IDatabaseFactory databaseFactory,
             IOptions<DatabaseConfig> config = null)
         {
-            this.config = config.Value ?? DatabaseConstants.DefaultConfig;
+            this.config = config?.Value ?? DatabaseConstants.DefaultConfig;
             this.fileManager = fileManager;
             this.fileIOFactory = fileIOFactory;
             this.databaseFactory = databaseFactory;

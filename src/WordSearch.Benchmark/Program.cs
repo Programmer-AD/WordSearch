@@ -2,6 +2,9 @@
 using WordSearch.Logic;
 using WordSearch.Logic.Interfaces.Primary;
 
+/// <summary>
+/// Naive benchmark with primary purpose - profiling with other tools
+/// </summary>
 namespace WordSearch.Benchmark
 {
     internal static class Program
