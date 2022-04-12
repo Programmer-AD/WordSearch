@@ -1,25 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{89E24F55-7C5F-4919-B000-733BF06DC46F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearch.Logic.Tests", "tests\WordSearch.Logic.Tests\WordSearch.Logic.Tests.csproj", "{E904DD0E-C9FB-4753-B8B7-DC252F56F55A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordSearch.Logic.Tests", "tests\WordSearch.Logic.Tests\WordSearch.Logic.Tests.csproj", "{E904DD0E-C9FB-4753-B8B7-DC252F56F55A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CEEB6568-12BC-46B7-8E33-213F7CD7E686}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearch.CLI", "src\WordSearch.CLI\WordSearch.CLI.csproj", "{228C05E2-81D8-4FA9-925E-736F5D6D21CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordSearch.CLI", "src\WordSearch.CLI\WordSearch.CLI.csproj", "{228C05E2-81D8-4FA9-925E-736F5D6D21CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearch.Logic", "src\WordSearch.Logic\WordSearch.Logic.csproj", "{E0178F45-FF42-413D-99AC-22D4857621DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordSearch.Logic", "src\WordSearch.Logic\WordSearch.Logic.csproj", "{E0178F45-FF42-413D-99AC-22D4857621DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSearch.Benchmark", "src\WordSearch.Benchmark\WordSearch.Benchmark.csproj", "{AB1F1473-3D07-4232-BB14-93142D376D0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{E904DD0E-C9FB-4753-B8B7-DC252F56F55A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -34,10 +33,21 @@ Global
 		{E0178F45-FF42-413D-99AC-22D4857621DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0178F45-FF42-413D-99AC-22D4857621DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0178F45-FF42-413D-99AC-22D4857621DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB1F1473-3D07-4232-BB14-93142D376D0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1F1473-3D07-4232-BB14-93142D376D0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1F1473-3D07-4232-BB14-93142D376D0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1F1473-3D07-4232-BB14-93142D376D0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E904DD0E-C9FB-4753-B8B7-DC252F56F55A} = {89E24F55-7C5F-4919-B000-733BF06DC46F}
 		{228C05E2-81D8-4FA9-925E-736F5D6D21CF} = {CEEB6568-12BC-46B7-8E33-213F7CD7E686}
 		{E0178F45-FF42-413D-99AC-22D4857621DC} = {CEEB6568-12BC-46B7-8E33-213F7CD7E686}
+		{AB1F1473-3D07-4232-BB14-93142D376D0F} = {CEEB6568-12BC-46B7-8E33-213F7CD7E686}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1C5EBC90-E696-4E57-8557-BB9F23A64799}
 	EndGlobalSection
 EndGlobal
