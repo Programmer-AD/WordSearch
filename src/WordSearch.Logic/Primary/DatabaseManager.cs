@@ -118,12 +118,12 @@ namespace WordSearch.Logic.Primary
         {
             if (string.IsNullOrEmpty(chars))
             {
-                throw new ArgumentException("Chars must not be null or empty", nameof(chars));
+                throw new WrongDatabaseCharsException(chars, "Chars must not be null or empty");
             }
             var charSet = chars.ToHashSet();
             if (charSet.Count < chars.Length)
             {
-                throw new ArgumentException("Chars must not contain same character twice", nameof(chars));
+                throw new WrongDatabaseCharsException(chars, "Chars must not contain same character twice");
             }
         }
 
@@ -131,7 +131,7 @@ namespace WordSearch.Logic.Primary
         {
             if (string.IsNullOrEmpty(dbName))
             {
-                throw new DatabaseWrongNameException(dbName, "Cant be null or empty");
+                throw new WrongDatabaseNameException(dbName, "Cant be null or empty");
             }
             else
             {
@@ -139,7 +139,7 @@ namespace WordSearch.Logic.Primary
                 var notFullMatch = match?.Length != dbName.Length;
                 if (notFullMatch)
                 {
-                    throw new DatabaseWrongNameException(dbName, "Contains invalid characters");
+                    throw new WrongDatabaseNameException(dbName, "Contains invalid characters");
                 }
             }
         }

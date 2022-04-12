@@ -1,4 +1,5 @@
-﻿using WordSearch.Logic.Interfaces.Encoders;
+﻿using WordSearch.Logic.Exceptions.WordsFile;
+using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.Primary;
 using WordSearch.Logic.Interfaces.Primary.Files;
 
@@ -64,7 +65,7 @@ namespace WordSearch.Logic.Primary
         {
             if (string.IsNullOrEmpty(word))
             {
-                throw new ArgumentException("Word cant be null or empty!", nameof(word));
+                throw new WrongWordException("Word cant be null or empty!", nameof(word));
             }
         }
     }

@@ -1,8 +1,8 @@
 ﻿namespace WordSearch.Logic.Exceptions.DatabaseManager
 {
-    public class DatabaseWrongNameException : Exception
+    public class WrongDatabaseNameException : DatabaseException
     {
-        public DatabaseWrongNameException(string dbName, string reason)
+        public WrongDatabaseNameException(string dbName, string reason)
             : base(GetMessageByDbName(dbName, reason))
         {
         }

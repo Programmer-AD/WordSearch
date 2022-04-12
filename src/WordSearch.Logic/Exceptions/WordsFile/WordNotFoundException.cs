@@ -1,6 +1,6 @@
 ﻿namespace WordSearch.Logic.Exceptions.WordsFile
 {
-    public class WordNotFoundException : Exception
+    public class WordNotFoundException : WordException
     {
         public WordNotFoundException(string word) : base(GetMessageByWord(word))
         {

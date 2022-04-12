@@ -40,39 +40,39 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [TestCaseSource(nameof(wrongDbNames))]
-        public void Create_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        public void Create_WhenDatabaseNameIsWrong_ThrowWrongDatabaseNameException(string dbName)
         {
             SetDbExists(false);
 
             databaseManager.Invoking(x => x.Create(dbName, Chars))
-               .Should().Throw<DatabaseWrongNameException>();
+               .Should().Throw<WrongDatabaseNameException>();
         }
 
         [Test]
-        public void Create_WhenCharsIsNull_ThrowArgumentException()
+        public void Create_WhenCharsIsNull_ThrowWrongDatabaseCharsException()
         {
             SetDbExists(false);
 
             databaseManager.Invoking(x => x.Create(DatabaseName, null))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongDatabaseCharsException>();
         }
 
         [Test]
-        public void Create_WhenCharsIsEmpty_ThrowArgumentException()
+        public void Create_WhenCharsIsEmpty_ThrowWrongDatabaseCharsException()
         {
             SetDbExists(false);
 
             databaseManager.Invoking(x => x.Create(DatabaseName, string.Empty))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongDatabaseCharsException>();
         }
 
         [Test]
-        public void Create_WhenCharsContainsSameCharTwice_ThrowArgumentException()
+        public void Create_WhenCharsContainsSameCharTwice_ThrowWrongDatabaseCharsException()
         {
             SetDbExists(false);
 
             databaseManager.Invoking(x => x.Create(DatabaseName, "1213"))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongDatabaseCharsException>();
         }
 
         [Test]
@@ -133,12 +133,12 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [TestCaseSource(nameof(wrongDbNames))]
-        public void Delete_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        public void Delete_WhenDatabaseNameIsWrong_ThrowWrongDatabaseNameException(string dbName)
         {
             SetDbExists(true);
 
             databaseManager.Invoking(x => x.Delete(dbName))
-               .Should().Throw<DatabaseWrongNameException>();
+               .Should().Throw<WrongDatabaseNameException>();
         }
 
         [Test]
@@ -176,12 +176,12 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [TestCaseSource(nameof(wrongDbNames))]
-        public void Get_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        public void Get_WhenDatabaseNameIsWrong_ThrowWrongDatabaseNameException(string dbName)
         {
             SetDbExists(true);
 
             databaseManager.Invoking(x => x.Get(dbName))
-               .Should().Throw<DatabaseWrongNameException>();
+               .Should().Throw<WrongDatabaseNameException>();
         }
 
         [Test]
@@ -205,10 +205,10 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [TestCaseSource(nameof(wrongDbNames))]
-        public void Exists_WhenDatabaseNameIsWrong_ThrowDatabaseWrongNameException(string dbName)
+        public void Exists_WhenDatabaseNameIsWrong_ThrowWrongDatabaseNameException(string dbName)
         {
             databaseManager.Invoking(x => x.Exists(dbName))
-               .Should().Throw<DatabaseWrongNameException>();
+               .Should().Throw<WrongDatabaseNameException>();
         }
 
         [Test]

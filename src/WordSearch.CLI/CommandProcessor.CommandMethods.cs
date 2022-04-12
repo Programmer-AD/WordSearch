@@ -43,7 +43,7 @@ namespace WordSearch.CLI
             {
                 return e.Message;
             }
-            catch (DatabaseWrongNameException e)
+            catch (WrongDatabaseNameException e)
             {
                 return e.Message;
 
@@ -66,7 +66,7 @@ namespace WordSearch.CLI
             {
                 return e.Message;
             }
-            catch (DatabaseWrongNameException e)
+            catch (WrongDatabaseNameException e)
             {
                 return e.Message;
             }
@@ -84,7 +84,7 @@ namespace WordSearch.CLI
             {
                 return e.Message;
             }
-            catch (DatabaseWrongNameException e)
+            catch (WrongDatabaseNameException e)
             {
                 return e.Message;
             }
@@ -106,7 +106,7 @@ namespace WordSearch.CLI
             {
                 return e.Message;
             }
-            catch (DatabaseWrongNameException e)
+            catch (WrongDatabaseNameException e)
             {
                 return e.Message;
             }

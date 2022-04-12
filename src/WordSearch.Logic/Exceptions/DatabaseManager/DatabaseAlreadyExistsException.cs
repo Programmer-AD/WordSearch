@@ -1,6 +1,6 @@
 ﻿namespace WordSearch.Logic.Exceptions.DatabaseManager
 {
-    public class DatabaseAlreadyExistsException : Exception
+    public class DatabaseAlreadyExistsException : DatabaseException
     {
         public DatabaseAlreadyExistsException(string dbName)
             : base(GetMessageByDbName(dbName))

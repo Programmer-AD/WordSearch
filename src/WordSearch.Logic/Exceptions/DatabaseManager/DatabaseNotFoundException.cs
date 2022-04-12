@@ -1,6 +1,6 @@
 ﻿namespace WordSearch.Logic.Exceptions.DatabaseManager
 {
-    public class DatabaseNotFoundException : Exception
+    public class DatabaseNotFoundException : DatabaseException
     {
         public DatabaseNotFoundException(string dbName)
             : base(GetMessageByDbName(dbName))

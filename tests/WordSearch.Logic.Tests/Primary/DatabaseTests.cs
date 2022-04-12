@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WordSearch.Logic.Exceptions.WordsFile;
 using WordSearch.Logic.Interfaces.Encoders;
 using WordSearch.Logic.Interfaces.Primary.Files;
 using WordSearch.Logic.Primary;
@@ -33,21 +34,21 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [Test]
-        public void Add_WhenWordIsNull_ThrowsArgumentException()
+        public void Add_WhenWordIsNull_ThrowsWrongWordException()
         {
             string word = null;
 
             database.Invoking(x => x.Add(word))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongWordException>();
         }
 
         [Test]
-        public void Add_WhenWordIsEmpty_ThrowsArgumentException()
+        public void Add_WhenWordIsEmpty_ThrowsWrongWordException()
         {
             var word = string.Empty;
 
             database.Invoking(x => x.Add(word))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongWordException>();
         }
 
         [Test]
@@ -80,16 +81,16 @@ namespace WordSearch.Logic.Tests.Primary
             string word = null;
 
             database.Invoking(x => x.Delete(word))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongWordException>();
         }
 
         [Test]
-        public void Delete_WhenWordIsEmpty_ThrowsArgumentException()
+        public void Delete_WhenWordIsEmpty_ThrowsWrongWordException()
         {
             var word = string.Empty;
 
             database.Invoking(x => x.Delete(word))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongWordException>();
         }
 
         [Test]
@@ -123,29 +124,29 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [Test]
-        public void GetWords_WhenWordIsNull_ThrowsArgumentException()
+        public void GetWords_WhenWordIsNull_ThrowsWrongWordException()
         {
             string word = null;
 
             database.Invoking(x => x.GetWords(word, MaxDifference))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongWordException>();
         }
 
         [Test]
-        public void GetWords_WhenWordIsEmpty_ThrowsArgumentException()
+        public void GetWords_WhenWordIsEmpty_ThrowsWrongWordException()
         {
             var word = string.Empty;
 
             database.Invoking(x => x.GetWords(word, MaxDifference))
-               .Should().Throw<ArgumentException>();
+               .Should().Throw<WrongWordException>();
         }
 
         [Test]
         public void GetWords_CallsWordEncoderGetCharCountsOnce()
         {
-            var asyncEnumeratorMock = new Mock<IEnumerator<CharsRecord>>();
+            var enumeratorMock = new Mock<IEnumerator<CharsRecord>>();
             charsFileMock.Setup(x => x.GetEnumerator())
-                .Returns(asyncEnumeratorMock.Object);
+                .Returns(enumeratorMock.Object);
 
             database.GetWords(Word, MaxDifference);
 
