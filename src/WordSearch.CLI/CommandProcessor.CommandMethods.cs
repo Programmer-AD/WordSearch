@@ -39,14 +39,9 @@ namespace WordSearch.CLI
                 databaseManager.Create(dbName, chars);
                 return $"Database \"{dbName}\" created successfully";
             }
-            catch (DatabaseAlreadyExistsException e)
+            catch (DatabaseException e)
             {
                 return e.Message;
-            }
-            catch (WrongDatabaseNameException e)
-            {
-                return e.Message;
-
             }
         }
 
@@ -62,11 +57,7 @@ namespace WordSearch.CLI
                 }
                 return $"Database \"{dbName}\" deleted successfully";
             }
-            catch (DatabaseNotFoundException e)
-            {
-                return e.Message;
-            }
-            catch (WrongDatabaseNameException e)
+            catch (DatabaseException e)
             {
                 return e.Message;
             }
@@ -80,11 +71,7 @@ namespace WordSearch.CLI
                 UsedDatabase = databaseManager.Get(dbName);
                 return $"Now using database \"{dbName}\"";
             }
-            catch (DatabaseNotFoundException e)
-            {
-                return e.Message;
-            }
-            catch (WrongDatabaseNameException e)
+            catch (DatabaseException e)
             {
                 return e.Message;
             }
@@ -102,11 +89,7 @@ namespace WordSearch.CLI
 
                 return stringBuilder.ToString();
             }
-            catch (DatabaseNotFoundException e)
-            {
-                return e.Message;
-            }
-            catch (WrongDatabaseNameException e)
+            catch (DatabaseException e)
             {
                 return e.Message;
             }
@@ -125,7 +108,7 @@ namespace WordSearch.CLI
                 UsedDatabase.Add(word);
                 return $"Word \"{word}\" added successfully";
             }
-            catch (WordAlreadyExistsException e)
+            catch (WordException e)
             {
                 return e.Message;
             }
@@ -143,7 +126,7 @@ namespace WordSearch.CLI
                 UsedDatabase.Add(word);
                 return $"Word \"{word}\" deleted successfully";
             }
-            catch (WordNotFoundException e)
+            catch (WordException e)
             {
                 return e.Message;
             }
