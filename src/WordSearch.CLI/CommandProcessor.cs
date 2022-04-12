@@ -83,7 +83,7 @@ namespace WordSearch.CLI
                         return false;
                     }
                 }
-                else if (parameters[i].DefaultValue != null)
+                else if (parameters[i].HasDefaultValue)
                 {
                     paramValues[i] = parameters[i].DefaultValue;
                 }
