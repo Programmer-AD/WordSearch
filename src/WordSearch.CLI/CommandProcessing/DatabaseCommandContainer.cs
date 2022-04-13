@@ -1,38 +1,22 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using WordSearch.Logic.Exceptions.DatabaseManager;
 using WordSearch.Logic.Exceptions.WordsFile;
+using WordSearch.Logic.Interfaces.Primary;
 
-namespace WordSearch.CLI
+namespace WordSearch.CLI.CommandProcessing
 {
-    internal partial class CommandProcessor
+    internal class DatabaseCommandContainer
     {
-        [CommandMethod]
-        private string Help()
+        private readonly IDatabaseManager databaseManager;
+
+        public IDatabase UsedDatabase { get; private set; }
+
+        public DatabaseCommandContainer(IDatabaseManager databaseManager)
         {
-            var stringBuilder = new StringBuilder();
-            foreach (var overloads in commandMethods)
-            {
-                stringBuilder.AppendLine(overloads.Key);
-                foreach (var method in overloads)
-                {
-                    stringBuilder.Append('\t').AppendLine(GetMethodDescription(method));
-                }
-                stringBuilder.AppendLine();
-            }
-            return stringBuilder.ToString();
+            this.databaseManager = databaseManager;
         }
 
-        private static string GetMethodDescription(MethodInfo methodInfo)
-        {
-            var paramsDescription = string.Join(' ', methodInfo.GetParameters()
-                .Select(x => $"{x.Name}:{x.ParameterType.Name}"));
-
-            return $"{methodInfo.Name} {paramsDescription}";
-        }
-
-        [CommandMethod]
-        private string CreateDB(string dbName, string chars)
+        public string CreateDB(string dbName, string chars)
         {
             try
             {
@@ -44,14 +28,12 @@ namespace WordSearch.CLI
                 return e.Message;
             }
         }
-
-        [CommandMethod]
-        private string DeleteDB(string dbName)
+        public string DeleteDB(string dbName)
         {
             try
             {
                 databaseManager.Delete(dbName);
-                if (UsedDatabase.Name == dbName)
+                if (UsedDatabase?.Name == dbName)
                 {
                     UsedDatabase = null;
                 }
@@ -63,8 +45,7 @@ namespace WordSearch.CLI
             }
         }
 
-        [CommandMethod]
-        private string Use(string dbName)
+        public string Use(string dbName)
         {
             try
             {
@@ -77,27 +58,17 @@ namespace WordSearch.CLI
             }
         }
 
-        [CommandMethod]
-        private string ShowDbs()
+        public string ShowDbs()
         {
-            try
-            {
-                var stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Databases: ")
-                    .AppendJoin("\r\n", databaseManager.GetDbNames().Select(x => $"- \"{x}\""))
-                    .AppendLine();
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Databases: ")
+                .AppendJoin("\r\n", databaseManager.GetDbNames().Select(x => $"- \"{x}\""))
+                .AppendLine();
 
-                return stringBuilder.ToString();
-            }
-            catch (DatabaseException e)
-            {
-                return e.Message;
-            }
+            return stringBuilder.ToString();
         }
 
-
-        [CommandMethod]
-        private string AddWord(string word)
+        public string AddWord(string word)
         {
             if (UsedDatabase == null)
             {
@@ -114,8 +85,7 @@ namespace WordSearch.CLI
             }
         }
 
-        [CommandMethod]
-        private string DeleteWord(string word)
+        public string DeleteWord(string word)
         {
             if (UsedDatabase == null)
             {
@@ -123,7 +93,7 @@ namespace WordSearch.CLI
             }
             try
             {
-                UsedDatabase.Add(word);
+                UsedDatabase.Delete(word);
                 return $"Word \"{word}\" deleted successfully";
             }
             catch (WordException e)
@@ -132,8 +102,7 @@ namespace WordSearch.CLI
             }
         }
 
-        [CommandMethod]
-        private string FindWords(string word, byte maxDifference)
+        public string FindWords(string word, byte maxDifference)
         {
             if (UsedDatabase == null)
             {
@@ -149,8 +118,7 @@ namespace WordSearch.CLI
             return stringBuilder.ToString();
         }
 
-        [CommandMethod]
-        private string ShowChars()
+        public string ShowChars()
         {
             if (UsedDatabase == null)
             {

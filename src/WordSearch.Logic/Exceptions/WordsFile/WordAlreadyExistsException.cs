@@ -1,6 +1,6 @@
 ﻿namespace WordSearch.Logic.Exceptions.WordsFile
 {
-    public class WordAlreadyExistsException : Exception
+    public class WordAlreadyExistsException : WordException
     {
         public WordAlreadyExistsException(string word) : base(GetMessageByWord(word))
         {

@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="$(AssemblyName).Tests"/>
+		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
 	</ItemGroup>
 
 </Project>
