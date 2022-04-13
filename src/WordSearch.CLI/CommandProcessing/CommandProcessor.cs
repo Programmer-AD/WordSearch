@@ -1,70 +1,101 @@
 ﻿using System.Reflection;
-using WordSearch.CLI.CommandProcessing;
-using WordSearch.Logic.Interfaces.Primary;
+using System.Text;
+using WordSearch.CLI.Exceptions;
 
-namespace WordSearch.CLI
+namespace WordSearch.CLI.CommandProcessing
 {
-    internal partial class CommandProcessor
+    public class CommandProcessor
     {
-        private static readonly ILookup<string, MethodInfo> commandMethods = GetCommandMethods();
+        private static readonly IReadOnlyDictionary<Type, Func<string, object>> parsers = GetParsers();
 
-        private readonly IDatabaseManager databaseManager;
-        public IDatabase UsedDatabase { get; private set; }
+        private readonly ILookup<string, MethodInfo> commandMethods;
+        private readonly object commandContainer;
 
-        public CommandProcessor(IDatabaseManager databaseManager)
+        public CommandProcessor(object commandContainer)
         {
-            this.databaseManager = databaseManager;
+            commandMethods = GetCommandMethods(commandContainer.GetType());
+            this.commandContainer = commandContainer;
         }
 
-        internal string Process(string input)
+        public string Process(string input)
         {
             var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var methodName = NormalizeMethodName(parts[0]);
+            var commandName = NormalizeCommandName(parts[0]);
 
-            if (commandMethods.Contains(methodName))
+            if (commandName == NormalizeCommandName("help"))
             {
-                var methodOverloads = commandMethods[methodName];
+                return ShowHelp();
+            }
+
+            if (commandMethods.Contains(commandName))
+            {
+                var methodOverloads = commandMethods[commandName];
                 var trimmedInput = parts.Skip(1).ToArray();
 
                 foreach (var overload in methodOverloads)
                 {
-                    if (TryCallCommandMethod(overload, trimmedInput, out var resultMessage))
+                    if (TryCallCommandMethod(overload, trimmedInput, out var result))
                     {
-                        return resultMessage;
+                        return result;
                     }
                 }
-                return $"No overload found for your request";
+                throw new CommandOverloadNotFoundException(commandName);
             }
             else
             {
-                return $"Unknown command \"{methodName}\"";
+                throw new CommandNotFoundException(commandName);
             }
         }
 
-        private static string NormalizeMethodName(string methodName)
+        public string ShowHelp()
         {
-            return methodName.ToLower();
+            var stringBuilder = new StringBuilder();
+            foreach (var overloads in commandMethods)
+            {
+                stringBuilder.AppendLine(overloads.Key);
+                foreach (var method in overloads)
+                {
+                    stringBuilder.Append('\t').AppendLine(GetMethodDescription(method));
+                }
+                stringBuilder.AppendLine();
+            }
+            return stringBuilder.ToString();
         }
 
-        private static ILookup<string, MethodInfo> GetCommandMethods()
+        private static string GetMethodDescription(MethodInfo methodInfo)
         {
-            var result = typeof(CommandProcessor)
-                .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+            var paramsDescription = string.Join(' ', methodInfo.GetParameters()
+                .Select(x => $"{x.Name}:{x.ParameterType.Name}"));
+
+            return $"{methodInfo.Name} {paramsDescription}";
+        }
+
+        private static string NormalizeCommandName(string commandName)
+        {
+            return commandName.ToLower();
+        }
+
+        private static ILookup<string, MethodInfo> GetCommandMethods(Type containerType)
+        {
+            var result = containerType
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                 .Where(IsCommandMethod)
-                .ToLookup(x => NormalizeMethodName(x.Name));
+                .ToLookup(x => NormalizeCommandName(x.Name));
 
             return result;
         }
 
-        private static bool IsCommandMethod(MethodInfo methodInfo)
+        private static bool IsCommandMethod(MethodInfo method)
         {
-            return methodInfo.GetCustomAttribute<CommandMethodAttribute>() != null
-                && methodInfo.ReturnType == typeof(string);
+            var result = method.ReturnType == typeof(string) 
+                && method.Name != nameof(Object.ToString);
+
+            return result;
         }
 
-        private bool TryCallCommandMethod(MethodInfo methodInfo, string[] input, out string resultMessage)
+        private bool TryCallCommandMethod(MethodInfo methodInfo, string[] input, out string result)
         {
-            resultMessage = string.Empty;
+            result = null;
 
             var parameters = methodInfo.GetParameters();
             var paramValues = new object[parameters.Length];
@@ -94,33 +125,50 @@ namespace WordSearch.CLI
                 }
             }
 
-            var result = methodInfo.Invoke(this, paramValues);
-            resultMessage = (string)result;
+            result = (string)methodInfo.Invoke(commandContainer, paramValues);
             return true;
         }
 
         private static bool TryParseParam(Type type, string input, out object result)
         {
             result = null;
-            try
+            if (parsers.TryGetValue(type, out var parser))
             {
-                switch (type.Name)
+                try
                 {
-                    case nameof(String):
-                        result = input;
-                        break;
-                    case nameof(Byte):
-                        result = Convert.ToByte(input);
-                        break;
-                    default:
-                        return false;
+                    result = parser(input);
+                    return true;
                 }
-                return true;
+                catch (Exception) { }
             }
-            catch (Exception)
-            {
-                return false;
-            }
+            return false;
+        }
+
+        private static IReadOnlyDictionary<Type, Func<string, object>> GetParsers()
+        {
+            var result = new Dictionary<Type, Func<string, object>>();
+            AddParser(result, Convert.ToString);
+            AddParser(result, Convert.ToByte);
+            AddParser(result, Convert.ToSByte);
+            AddParser(result, Convert.ToBoolean);
+            AddParser(result, Convert.ToChar);
+            AddParser(result, Convert.ToInt16);
+            AddParser(result, Convert.ToUInt16);
+            AddParser(result, Convert.ToInt32);
+            AddParser(result, Convert.ToUInt32);
+            AddParser(result, Convert.ToInt64);
+            AddParser(result, Convert.ToUInt64);
+            AddParser(result, Convert.ToSingle);
+            AddParser(result, Convert.ToDouble);
+            AddParser(result, Convert.ToDecimal);
+            return result;
+        }
+
+        private static void AddParser<T>(
+            Dictionary<Type, Func<string, object>> parsers,
+            Func<string, T> parser)
+        {
+            parsers.Add(typeof(T), x => parser(x));
         }
     }
 }

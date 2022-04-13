@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using WordSearch.CLI.CommandProcessing;
 using WordSearch.Logic;
 using WordSearch.Logic.Interfaces.Primary;
 
@@ -10,20 +11,28 @@ namespace WordSearch.CLI
         {
             using var serviceProvider = GetServiceProvider();
             var databaseManager = serviceProvider.GetService<IDatabaseManager>();
-            var commandProcessor = new CommandProcessor(databaseManager);
+            var commandContainer = new DatabaseCommandContainer(databaseManager);
+            var commandProcessor = new CommandProcessor(commandContainer);
 
             Console.WriteLine("WordSearch database CLI");
             Console.WriteLine();
             while (true)
             {
-                var usedDbName = commandProcessor.UsedDatabase?.Name ?? "(not selected)";
+                var usedDbName = commandContainer.UsedDatabase?.Name ?? "(not selected)";
                 Console.Write(usedDbName);
                 Console.Write(" > ");
                 var input = Console.ReadLine();
                 if (!string.IsNullOrEmpty(input))
                 {
-                    var resultMessage = commandProcessor.Process(input);
-                    Console.WriteLine(resultMessage);
+                    try
+                    {
+                        var resultMessage = commandProcessor.Process(input);
+                        Console.WriteLine(resultMessage);
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.Message);
+                    }
                     Console.WriteLine();
                 }
             }
