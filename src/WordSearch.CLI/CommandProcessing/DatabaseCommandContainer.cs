@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using System.Text;
 using WordSearch.Logic.Exceptions.DatabaseManager;
 using WordSearch.Logic.Exceptions.WordsFile;
 using WordSearch.Logic.Interfaces.Primary;
@@ -34,7 +33,7 @@ namespace WordSearch.CLI.CommandProcessing
             try
             {
                 databaseManager.Delete(dbName);
-                if (UsedDatabase.Name == dbName)
+                if (UsedDatabase?.Name == dbName)
                 {
                     UsedDatabase = null;
                 }
@@ -61,19 +60,12 @@ namespace WordSearch.CLI.CommandProcessing
 
         public string ShowDbs()
         {
-            try
-            {
-                var stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("Databases: ")
-                    .AppendJoin("\r\n", databaseManager.GetDbNames().Select(x => $"- \"{x}\""))
-                    .AppendLine();
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Databases: ")
+                .AppendJoin("\r\n", databaseManager.GetDbNames().Select(x => $"- \"{x}\""))
+                .AppendLine();
 
-                return stringBuilder.ToString();
-            }
-            catch (DatabaseException e)
-            {
-                return e.Message;
-            }
+            return stringBuilder.ToString();
         }
 
         public string AddWord(string word)
@@ -101,7 +93,7 @@ namespace WordSearch.CLI.CommandProcessing
             }
             try
             {
-                UsedDatabase.Add(word);
+                UsedDatabase.Delete(word);
                 return $"Word \"{word}\" deleted successfully";
             }
             catch (WordException e)

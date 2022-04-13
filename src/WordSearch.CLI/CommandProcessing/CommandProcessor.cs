@@ -4,7 +4,7 @@ using WordSearch.CLI.Exceptions;
 
 namespace WordSearch.CLI.CommandProcessing
 {
-    public class CommandProcessor
+    internal class CommandProcessor
     {
         private static readonly IReadOnlyDictionary<Type, Func<string, object>> parsers = GetParsers();
 

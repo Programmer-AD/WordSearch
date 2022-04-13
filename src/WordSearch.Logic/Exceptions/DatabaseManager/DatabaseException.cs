@@ -4,6 +4,10 @@ namespace WordSearch.Logic.Exceptions.DatabaseManager
 {
     public class DatabaseException : Exception
     {
+        public DatabaseException()
+        {
+        }
+
         public DatabaseException(string message) : base(message)
         {
         }
