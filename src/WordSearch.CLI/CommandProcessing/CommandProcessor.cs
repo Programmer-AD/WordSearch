@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using WordSearch.CLI.CommandProcessing;
 using WordSearch.Logic.Interfaces.Primary;
 
 namespace WordSearch.CLI

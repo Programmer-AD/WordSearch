@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
+using WordSearch.CLI.CommandProcessing;
 using WordSearch.Logic.Exceptions.DatabaseManager;
 using WordSearch.Logic.Exceptions.WordsFile;
 
