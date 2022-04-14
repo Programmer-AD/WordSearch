@@ -65,7 +65,11 @@ namespace WordSearch.Logic.Primary
         {
             if (string.IsNullOrEmpty(word))
             {
-                throw new WrongWordException("Word cant be null or empty!", nameof(word));
+                throw new WrongWordException(word, "Word cant be null or empty!");
+            }
+            if (word.Length > DatabaseConstants.MaxWordLength)
+            {
+                throw new WrongWordException(word, "Word is too long (>127 chars)!");
             }
         }
     }

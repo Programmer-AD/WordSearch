@@ -52,6 +52,15 @@ namespace WordSearch.Logic.Tests.Primary
         }
 
         [Test]
+        public void Add_WhenWordIsTooLong_ThrowsWrongWordException()
+        {
+            var word = new string('a', DatabaseConstants.MaxWordLength + 1);
+
+            database.Invoking(x => x.Add(word))
+               .Should().Throw<WrongWordException>();
+        }
+
+        [Test]
         public void Add_CallWordsFileAdd()
         {
             database.Add(Word);
@@ -92,6 +101,17 @@ namespace WordSearch.Logic.Tests.Primary
             database.Invoking(x => x.Delete(word))
                .Should().Throw<WrongWordException>();
         }
+
+        [Test]
+        public void Delete_WhenWordIsTooLong_ThrowsWrongWordException()
+        {
+            var word = new string('a', DatabaseConstants.MaxWordLength + 1);
+
+            database.Invoking(x => x.Delete(word))
+               .Should().Throw<WrongWordException>();
+        }
+
+
 
         [Test]
         public void Delete_CallWordsFileDeleteWithCorrectParametr()

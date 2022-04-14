@@ -6,6 +6,7 @@ namespace WordSearch.Logic.Primary
     {
         public const string DatabaseCharsFileExtension = ".chars.ws";
         public const string DatabaseWordFileExtension = ".word.ws";
+        public const int MaxWordLength = 127;
 
         public static readonly Regex CorrectDatabaseNameRegex = new("[A-Za-z0-9_\\-]+");
 
