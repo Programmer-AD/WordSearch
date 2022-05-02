@@ -2,7 +2,7 @@
 
 ## Description
 
-Its project with simple "databases" for searching words that different form other word with specified difference in character count.
+Its project with simple "databases" for searching words that different from other word with specified difference in character count.
 
 ## Functions
 
